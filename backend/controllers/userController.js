@@ -1,30 +1,52 @@
 import asyncHandler from "express-async-handler";
 
-// @route   POST /api/users/
 // @desc    Register a new user
+// @route   POST /api/users/
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
-
-  
+  res.send("register user");
 });
 
+// @desc    Auth user & get token
 // @route   POST /api/users/auth
-// @desc    Auth user & get token
 // @access  Public
+const authUser = asyncHandler(async (req, res) => {
+  res.send("auth user");
+});
 
+// @desc    Logout user & clear token
 // @route   POST /api/users/logout
-// @desc    Auth user & get token
 // @access  Public
+const logout = asyncHandler(async (req, res) => {
+  res.send("logout");
+});
 
-// @route   GET /api/users/
 // @desc    Search all users
+// @route   GET /api/users?search=
 // @access  Public
+const allUsers = asyncHandler(async (req, res) => {
+  res.send("search all users");
+});
 
-// @route   GET /api/users/profile
 // @desc    Get user profile
+// @route   GET /api/users/profile
 // @access  Private
+const getUserProfile = asyncHandler(async (req, res) => {
+  res.send("get user profile");
+});
 
-// @route   PUT /api/users/profile
 // @desc    Update user profile
+// @route   PUT /api/users/profile
 // @access  Private
+const updateUserProfile = asyncHandler(async (req, res) => {
+  res.send("update user profile");
+});
+
+export {
+  registerUser,
+  authUser,
+  logout,
+  allUsers,
+  getUserProfile,
+  updateUserProfile,
+};
