@@ -3,15 +3,21 @@ import {
   registerUser,
   authUser,
   logout,
-  allUsers,
   getUserProfile,
   updateUserProfile,
+  deleteUserProfile,
 } from "../controllers/userController.js";
+import { protect } from "../middleware/authMiddleware.js";
+
 const router = express.Router();
 
-router.route("/").get(allUsers).post(registerUser);
-router.post("/login", authUser);
+router.post("/", registerUser);
+router.post("/auth", authUser);
 router.post("/logout", logout);
-router.route("/profile").get(getUserProfile).put(updateUserProfile);
+router
+  .route("/profile")
+  .get(protect, getUserProfile)
+  .put(protect, updateUserProfile)
+  .delete(protect, deleteUserProfile);
 
 export default router;
