@@ -76,7 +76,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
     res.json({
       id: user._id,
       name: user.name,
-      nickname: user.nickname || null,
+      username: user.username || null,
       email: user.email,
       profilePic: user.profilePic || null,
     });
@@ -100,8 +100,8 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       user.password = req.body.password;
     }
 
-    if (req.body.nickname) {
-      user.nickname = req.body.nickname;
+    if (req.body.username) {
+      user.username = req.body.username;
     }
 
     const updatedUser = await user.save();
@@ -109,7 +109,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     res.json({
       id: updatedUser._id,
       name: updatedUser.name,
-      nickname: updatedUser.nickname,
+      username: updatedUser.username,
       email: updatedUser.email,
       profilePic: updatedUser.profilePic,
     });
