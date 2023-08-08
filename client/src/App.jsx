@@ -1,8 +1,10 @@
+import { Outlet } from "react-router-dom";
+
 const App = () => {
   return (
-    <div>
-      <p>mern chat</p>
-    </div>
+    <>
+      <Outlet />
+    </>
   );
 };
 
