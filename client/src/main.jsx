@@ -6,9 +6,9 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
-import { ChakraBaseProvider } from "@chakra-ui/react";
-import theme from "./theme.js";
+import { ChakraProvider } from "@chakra-ui/react";
 import App from "./App.jsx";
+import NotFound from "./pages/NotFound.jsx";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
@@ -23,14 +23,15 @@ const router = createBrowserRouter(
       <Route path="" element={<PrivateRoute />}>
         <Route path="/" element={<Home />} />
       </Route>
+      <Route path="*" element={<NotFound />} />
     </Route>
   )
 );
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <ChakraBaseProvider theme={theme}>
+    <ChakraProvider>
       <RouterProvider router={router} />
-    </ChakraBaseProvider>
+    </ChakraProvider>
   </React.StrictMode>
 );
