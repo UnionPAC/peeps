@@ -6,7 +6,7 @@ import generateToken from "../utils/generateToken.js";
 // @route   POST /api/users/
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
+  const { username, email, password } = req.body;
 
   const userExists = await User.findOne({ email });
 
@@ -16,7 +16,7 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   const user = await User.create({
-    name,
+    username,
     email,
     password,
   });
@@ -25,7 +25,7 @@ const registerUser = asyncHandler(async (req, res) => {
     generateToken(res, user._id);
     res.status(201).json({
       id: user._id,
-      name: user.name,
+      username: user.username,
       email: user.email,
     });
   } else {
@@ -46,7 +46,7 @@ const authUser = asyncHandler(async (req, res) => {
     generateToken(res, user._id);
     res.json({
       id: user._id,
-      name: user.name,
+      username: user.username,
       email: user.email,
     });
   } else {
@@ -75,8 +75,8 @@ const getUserProfile = asyncHandler(async (req, res) => {
   if (user) {
     res.json({
       id: user._id,
-      name: user.name,
-      username: user.username || null,
+      name: user.name || null,
+      username: user.username,
       email: user.email,
       profilePic: user.profilePic || null,
     });
@@ -93,15 +93,22 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
 
   if (user) {
-    user.name = req.body.name || user.name;
+    user.username = req.body.username || user.username;
     user.email = req.body.email || user.email;
 
+    // update password
     if (req.body.password) {
       user.password = req.body.password;
     }
 
-    if (req.body.username) {
-      user.username = req.body.username;
+    // update name
+    if (req.body.name) {
+      user.name = req.body.name;
+    }
+
+    // update profile picture
+    if (req.body.profilePic) {
+      user.profilePic = req.body.profilePic;
     }
 
     const updatedUser = await user.save();
