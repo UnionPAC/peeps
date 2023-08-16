@@ -7,14 +7,14 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-  IconButton,
+  Icon,
   useToast,
   Button,
   Text,
+  IconButton,
 } from "@chakra-ui/react";
-import Avatar from "./Avatar";
 import { useSelector, useDispatch } from "react-redux";
-import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
+import { FaSignInAlt, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
 import { useLogoutMutation } from "../slices/userApiSlice";
 import { clearCredentials } from "../slices/authSlice";
 
@@ -61,8 +61,10 @@ const Navbar = () => {
             <>
               <MenuButton
                 as={IconButton}
-                icon={<Avatar />}
+                icon={<FaUserCircle />}
+                fontSize='3rem'
                 bg="transparent"
+                color="gray.300"
                 _hover={false}
                 _active={false}
               />
@@ -74,16 +76,16 @@ const Navbar = () => {
               </MenuList>
             </>
           ) : (
-            <Flex gap="1rem">
+            <Flex gap="1.5rem">
               <ChakraLink as={ReactRouterLink} to="/login">
                 <Button>
-                  <IconButton icon={<FaSignInAlt />} />
+                  <Icon as={FaSignInAlt} marginRight="10px" />
                   <Text>Login</Text>
                 </Button>
               </ChakraLink>
               <ChakraLink as={ReactRouterLink} to="signup">
                 <Button>
-                  <IconButton icon={<FaSignOutAlt />} />
+                  <Icon as={FaSignOutAlt} marginRight="10px" />
                   <Text>Signup</Text>
                 </Button>
               </ChakraLink>
