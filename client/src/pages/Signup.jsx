@@ -1,4 +1,5 @@
-import { Link as ReactRouterLink } from "react-router-dom";
+import { useEffect } from "react";
+import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 import {
   Box,
   Text,
@@ -9,14 +10,19 @@ import {
   FormErrorMessage,
   Link as ChakraLink,
   Heading,
+  useToast,
 } from "@chakra-ui/react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
+import { useSignupMutation } from "../slices/userApiSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { setCredentials } from "../slices/authSlice";
 
 const initialValues = {
   username: "",
   email: "",
   password: "",
+  password2: "",
 };
 
 const signupValidationSchema = Yup.object({
@@ -34,10 +40,48 @@ const signupValidationSchema = Yup.object({
 });
 
 const Signup = () => {
-  const handleFormSubmit = (values, actions) => {
-    setTimeout(() => {
-      alert("Signup success!");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const toast = useToast({
+    isClosable: true,
+    variant: "left-accent",
+    position: "top-right",
+    containerStyle: { fontSize: "14px" },
+  });
 
+  const [signup, { isLoading }] = useSignupMutation();
+
+  const { userInfo } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (userInfo) {
+      navigate("/");
+    }
+  }, [navigate, userInfo]);
+
+  const handleFormSubmit = (values, actions) => {
+    setTimeout(async () => {
+      try {
+        // api mutate signup
+        const res = await signup({
+          username: values.username,
+          email: values.email,
+          password: values.password,
+        }).unwrap();
+        // dispatch set credentials
+        dispatch(setCredentials({ ...res }));
+        navigate("/");
+        toast({
+          title: "Signup successful!",
+          status: "success",
+        });
+      } catch (error) {
+        console.error(error);
+        toast({
+          title: error.data.message,
+          status: "error",
+        });
+      }
       // CALL REGISTER USER FROM API
       actions.setSubmitting(false);
     }, 1000);
