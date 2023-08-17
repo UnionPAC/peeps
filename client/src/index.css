@@ -1,3 +1,11 @@
+:root {
+  --bg-color: #e2f3e7;
+  --primary-color: #d7fc83;
+  --secondary-color: #a1fdbc;
+  --accent-color: #45a160;
+  --text-color: #030704;
+}
+
 *,
 *::before,
 *::after {
