@@ -2,6 +2,25 @@ import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 import generateToken from "../utils/generateToken.js";
 
+// @desc    Search all users
+// @route   GET /api/users?search=
+// @access  Public
+const allUsers = asyncHandler(async (req, res) => {
+  const keyword = req.query.search
+    ? {
+        $or: [
+          { name: { $regex: req.query.search, $options: "i" } },
+          { username: { $regex: req.query.search, $options: "i" } },
+          { email: { $regex: req.query.search, $options: "i" } },
+        ],
+      }
+    : {};
+
+  const users = await User.find({ ...keyword, _id: { $ne: req.user._id } });
+
+  res.send(users);
+});
+
 // @desc    Register a new user
 // @route   POST /api/users/
 // @access  Public
@@ -24,7 +43,7 @@ const registerUser = asyncHandler(async (req, res) => {
   if (user) {
     generateToken(res, user._id);
     res.status(201).json({
-      id: user._id,
+      _id: user._id,
       username: user.username,
       email: user.email,
     });
@@ -45,7 +64,7 @@ const authUser = asyncHandler(async (req, res) => {
   if (user && (await user.matchPassword(password))) {
     generateToken(res, user._id);
     res.json({
-      id: user._id,
+      _id: user._id,
       username: user.username,
       email: user.email,
     });
@@ -74,7 +93,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
 
   if (user) {
     res.json({
-      id: user._id,
+      _id: user._id,
       name: user.name || null,
       username: user.username,
       email: user.email,
@@ -114,7 +133,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     const updatedUser = await user.save();
 
     res.json({
-      id: updatedUser._id,
+      _id: updatedUser._id,
       name: updatedUser.name,
       username: updatedUser.username,
       email: updatedUser.email,
@@ -142,6 +161,7 @@ const deleteUserProfile = asyncHandler(async (req, res) => {
 });
 
 export {
+  allUsers,
   registerUser,
   authUser,
   logout,
