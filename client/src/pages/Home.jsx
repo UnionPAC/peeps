@@ -1,13 +1,13 @@
-import { useSelector } from "react-redux";
+import ChatList from "../components/ChatList";
+import ChatView from "../components/ChatView";
 
 const Home = () => {
-  const {
-    userInfo: { username },
-  } = useSelector((state) => state.auth);
+  
 
   return (
     <>
-      <p>Homepage</p>
+      <ChatList />
+      <ChatView />
     </>
   );
 };
