@@ -1,8 +1,11 @@
+import { Box } from "@chakra-ui/react";
+import ChatViewHead from "./ChatViewHead";
+
 const ChatView = () => {
   return (
-    <div>
-      <p>ChatView</p>
-    </div>
+    <Box width='75%'>
+      <ChatViewHead />
+    </Box>
   );
 };
 
