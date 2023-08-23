@@ -1,11 +1,13 @@
 import { Box, Flex, Input, IconButton } from "@chakra-ui/react";
 import { HiOutlineSearch } from "react-icons/hi";
-import ChatListHead from "./ChatListHead";
+import UserSettingsAndChat from "./UserSettingsAndChat";
 
 const ChatList = () => {
+  
+
   return (
     <Box width="25%" display="flex" flexDirection="column">
-      <ChatListHead />
+      <UserSettingsAndChat />
       <Flex
         justifyContent="center"
         border="1px"
@@ -25,6 +27,7 @@ const ChatList = () => {
           _focusVisible={false}
         />
       </Flex>
+  
     </Box>
   );
 };
