@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import {
   Flex,
   Avatar,
@@ -20,11 +19,9 @@ const UserSettingsAndChat = () => {
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.auth);
 
-  const { isOpen, onClose, onOpen } = useDisclosure();
-
-  const profileBtnRef = useRef();
-
   const [logout] = useLogoutMutation();
+
+  const { onOpen, isOpen, onClose } = useDisclosure();
 
   const handleLogout = async () => {
     try {
@@ -48,7 +45,6 @@ const UserSettingsAndChat = () => {
           name={userInfo.username}
           cursor="pointer"
           size="md"
-          ref={profileBtnRef}
           onClick={onOpen}
         />
         <Flex gap="5px">
@@ -73,13 +69,13 @@ const UserSettingsAndChat = () => {
               fontSize="1.4rem"
             />
             <MenuList>
-              <MenuItem>Profile</MenuItem>
+              <MenuItem onClick={onOpen}>Profile</MenuItem>
               <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </MenuList>
           </Menu>
         </Flex>
       </Flex>
-      <ProfileDrawer ref={profileBtnRef} isOpen={isOpen} onClose={onClose} />
+      <ProfileDrawer isOpen={isOpen} onClose={onClose} />
     </>
   );
 };
