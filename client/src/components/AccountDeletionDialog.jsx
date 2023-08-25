@@ -13,7 +13,7 @@ import { useDispatch } from "react-redux";
 import { clearCredentials } from "../slices/authSlice";
 import { useNavigate } from "react-router-dom";
 
-const AccountDeletionDialog = ({ onDeleteDialogClose, isDeleteDialogOpen }) => {
+const AccountDeletionDialog = ({ closeDeleteDialog, isDeleteDialogOpen }) => {
   const [deleteUserProfile, { isLoading }] = useDeleteUserProfileMutation();
 
   const dispatch = useDispatch();
@@ -21,7 +21,6 @@ const AccountDeletionDialog = ({ onDeleteDialogClose, isDeleteDialogOpen }) => {
   const toast = useToast();
 
   const handleDeleteAccount = async () => {
-    console.log("delete");
 
     try {
       // userApiSlice: deleteUserProfile
@@ -34,12 +33,10 @@ const AccountDeletionDialog = ({ onDeleteDialogClose, isDeleteDialogOpen }) => {
       console.error(error);
       toast({ title: error.data.message, status: "error" });
     }
-
-    onDeleteDialogClose();
   };
 
   return (
-    <AlertDialog isOpen={isDeleteDialogOpen} onClose={onDeleteDialogClose}>
+    <AlertDialog isOpen={isDeleteDialogOpen} onClose={closeDeleteDialog}>
       <AlertDialogOverlay>
         <AlertDialogContent>
           <AlertDialogHeader fontSize="lg" fontWeight="bold">
@@ -52,7 +49,7 @@ const AccountDeletionDialog = ({ onDeleteDialogClose, isDeleteDialogOpen }) => {
           </AlertDialogBody>
 
           <AlertDialogFooter>
-            <Button onClick={onDeleteDialogClose}>Cancel</Button>
+            <Button onClick={closeDeleteDialog}>Cancel</Button>
             <Button colorScheme="red" ml={3} onClick={handleDeleteAccount}>
               Delete
             </Button>
