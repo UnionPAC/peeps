@@ -1,6 +1,8 @@
 import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 import generateToken from "../utils/generateToken.js";
+import cloudinary from "../config/cloudinary.js";
+import { unlinkSync, writeFileSync } from "fs";
 
 // @desc    Search all users
 // @route   GET /api/users?search=
@@ -112,22 +114,36 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
 
   if (user) {
-    user.username = req.body.username || user.username;
-    user.email = req.body.email || user.email;
-
-    // update password
-    if (req.body.password) {
-      user.password = req.body.password;
-    }
-
-    // update name
     if (req.body.name) {
       user.name = req.body.name;
     }
 
-    // update profile picture
-    if (req.body.profilePic) {
-      user.profilePic = req.body.profilePic;
+    if (req.body.email) {
+      user.email = req.body.email;
+    }
+
+    if (req.file) {
+      // upload file to cloudinary
+      try {
+        // create temporary file path for the profilePic (comes in as type Buffer)
+        const tempFilePath = "./temp_upload";
+
+        writeFileSync(tempFilePath, req.file.buffer);
+
+        const result = await cloudinary.uploader.upload(tempFilePath, {
+          public_id: `profile_pictures/${req.file.originalname}`,
+        });
+
+        // console.log(
+        //   `Successfully uploaded to Cloudinary: ${JSON.stringify(result)}`
+        // );
+
+        const imageUrl = result.url;
+        user.profilePic = imageUrl;
+        unlinkSync(tempFilePath);
+      } catch (error) {
+        console.log(`Error uploading file to cloudinary: ${error}`);
+      }
     }
 
     const updatedUser = await user.save();

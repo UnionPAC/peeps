@@ -9,6 +9,9 @@ import {
   deleteUserProfile,
 } from "../controllers/userController.js";
 import { protect } from "../middleware/authMiddleware.js";
+import multer from "multer";
+
+const upload = multer();
 
 const router = express.Router();
 
@@ -18,7 +21,7 @@ router.post("/logout", logout);
 router
   .route("/profile")
   .get(protect, getUserProfile)
-  .put(protect, updateUserProfile)
+  .put(upload.single("profilePic"), protect, updateUserProfile)
   .delete(protect, deleteUserProfile);
 
 export default router;

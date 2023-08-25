@@ -1,4 +1,4 @@
-import { forwardRef, useRef } from "react";
+import { useState } from "react";
 import {
   Drawer,
   DrawerBody,
@@ -15,39 +15,138 @@ import {
   IconButton,
   DrawerFooter,
   Button,
+  useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { HiPencil, HiCheck } from "react-icons/hi";
+import AccountDeletionDialog from "./AccountDeletionDialog";
+import { useUpdateUserProfileMutation } from "../slices/userApiSlice";
+import * as Yup from "yup";
+import { setCredentials } from "../slices/authSlice";
 
-const ProfileDrawer = forwardRef(({ isOpen, onClose }, ref) => {
+const ProfileDrawer = ({ isOpen, onClose }) => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [isEdittingName, setIsEdittingName] = useState(false);
+  const [isEdittingEmail, setIsEdittingEmail] = useState(false);
+  const [imagePreview, setImagePreview] = useState("");
+
   const { userInfo } = useSelector((state) => state.auth);
+
+  const dispatch = useDispatch();
+  const toast = useToast();
+
+  const [updateUser, { isError, isLoading }] = useUpdateUserProfileMutation();
+
+  {
+    /* Account Deletion Dialog */
+  }
+  const {
+    isOpen: isDeleteDialogOpen,
+    onClose: closeDeleteDialog,
+    onOpen: openDeleteDialog,
+  } = useDisclosure();
+
+  const emailValidationSchema = Yup.string()
+    .email("Invalid Email Address")
+    .required("Email is required");
+
+  const nameValidationSchema = Yup.string().max(
+    24,
+    "Please enter a shorter name"
+  );
+
+  const handleUpdateEmail = async () => {
+    if (email === userInfo.email) return;
+
+    try {
+      await emailValidationSchema.validate(email);
+
+      const res = await updateUser({
+        email: email,
+      }).unwrap();
+      dispatch(setCredentials({ ...res, email: email }));
+    } catch (error) {
+      toast({ title: error.message, status: "error", position: "top-right" });
+    }
+  };
+
+  const handleNameUpdate = async () => {
+    if (name === "") {
+      toast({
+        title: "Please enter a valid name",
+        status: "error",
+        position: "top-right",
+      });
+    }
+
+    if (name === userInfo.name) return;
+    try {
+      await nameValidationSchema.validate(name);
+      const res = await updateUser({
+        name: name,
+      }).unwrap();
+      dispatch(setCredentials({ ...res, name: name }));
+    } catch (error) {
+      toast({ title: error.message, status: "error", position: "top-right" });
+    }
+  };
+
+  const handleProfilePicUpdate = async (e) => {
+    const selectedImage = e.target.files[0];
+
+    if (selectedImage) {
+      // Create Profile Pic Preview
+      const imageUrl = URL.createObjectURL(selectedImage);
+      setImagePreview(imageUrl);
+
+      try {
+        // update user profilePic
+        const res = await updateUser({
+          profilePic: selectedImage,
+        }).unwrap();
+        // console.log(res);
+        dispatch(setCredentials({ ...res, profilePic: res.profilePic }));
+        //
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
 
   return (
     <>
-      <Drawer
-        placement="left"
-        size="md"
-        openProfileRef={ref}
-        isOpen={isOpen}
-        onClose={onClose}
-      >
+      <Drawer placement="left" size="md" isOpen={isOpen} onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent>
-          <DrawerCloseButton />
+          <DrawerCloseButton _focusVisible={false} />
           <DrawerHeader>
             <Text fontSize="1.4rem" fontWeight="semibold">
               Profile
             </Text>
           </DrawerHeader>
           <DrawerBody>
-            <Flex justifyContent="center">
+            <Flex justifyContent="center" alignItems="center">
               <Avatar
                 name={null}
-                src={userInfo.profilePic}
+                src={userInfo.profilePic || imagePreview}
                 size="2xl"
                 margin="2em"
-                width="40%"
-                height="40%"
+                width="180px"
+                height="180px"
+                loading=""
+              />
+              <Input
+                type="file"
+                id="avatar-input"
+                position="absolute"
+                width="180px"
+                height="180px"
+                borderRadius="100px"
+                opacity="0"
+                cursor="pointer"
+                onChange={handleProfilePicUpdate}
               />
             </Flex>
 
@@ -55,22 +154,68 @@ const ProfileDrawer = forwardRef(({ isOpen, onClose }, ref) => {
               <Heading size="sm" fontWeight="semibold" mb=".5em">
                 Name
               </Heading>
-              <Flex mb="2em">
+              <Flex
+                mb="2em"
+                alignItems="center"
+                width="100%"
+                justifyContent="space-between"
+              >
                 {userInfo.name ? (
-                  <Flex>
-                    <Text>{userInfo.name}</Text>
-                    <IconButton icon={<HiPencil />} />
+                  <Flex
+                    alignItems="center"
+                    width="100%"
+                    justifyContent="space-between"
+                  >
+                    {isEdittingName ? (
+                      <>
+                        <Input
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                        />
+                        <IconButton
+                          onClick={() => {
+                            handleNameUpdate();
+                            setTimeout(() => {
+                              setIsEdittingName(false);
+                            }, 200);
+                          }}
+                          icon={<HiCheck />}
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <Text>{userInfo.name}</Text>
+                        <IconButton
+                          onClick={() => {
+                            setName(userInfo.name);
+                            setIsEdittingName(true);
+                          }}
+                          icon={<HiPencil />}
+                        />
+                      </>
+                    )}
                   </Flex>
                 ) : (
-                  <Flex width="100%">
+                  <Flex
+                    alignItems="center"
+                    width="100%"
+                    justifyContent="space-between"
+                  >
                     <Input
-                      width="90%"
-                      padding="0"
-                      border="none"
                       _focusVisible={false}
                       placeholder="Please add your name"
+                      onChange={(e) => setName(e.target.value)}
+                      value={name}
                     />
-                    <IconButton icon={<HiCheck />} />
+                    <IconButton
+                      onClick={() => {
+                        handleNameUpdate();
+                        setTimeout(() => {
+                          setIsEdittingName(false);
+                        }, 400);
+                      }}
+                      icon={<HiCheck />}
+                    />
                   </Flex>
                 )}
               </Flex>
@@ -85,7 +230,6 @@ const ProfileDrawer = forwardRef(({ isOpen, onClose }, ref) => {
                 justifyContent="space-between"
               >
                 <Text>{userInfo.username}</Text>
-                <IconButton icon={<HiPencil />} />
               </Flex>
 
               <Heading size="sm" fontWeight="semibold" mb=".5em">
@@ -97,22 +241,52 @@ const ProfileDrawer = forwardRef(({ isOpen, onClose }, ref) => {
                 width="100%"
                 justifyContent="space-between"
               >
-                <Text>{userInfo.email}</Text>
-                <IconButton icon={<HiPencil />} />
+                {isEdittingEmail ? (
+                  <>
+                    <Input
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <IconButton
+                      onClick={() => {
+                        handleUpdateEmail();
+                        setTimeout(() => {
+                          setIsEdittingEmail(false);
+                        }, 200);
+                      }}
+                      icon={<HiCheck />}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <Text>{userInfo.email}</Text>
+                    <IconButton
+                      onClick={() => {
+                        setEmail(userInfo.email);
+                        setIsEdittingEmail(true);
+                      }}
+                      icon={<HiPencil />}
+                    />
+                  </>
+                )}
               </Flex>
               <DrawerFooter
                 display="flex"
                 justifyContent="flex-start"
                 padding="0"
               >
-                <Button>Delete Account</Button>
+                <Button onClick={openDeleteDialog}>Delete Account</Button>
               </DrawerFooter>
             </Box>
           </DrawerBody>
         </DrawerContent>
       </Drawer>
+      <AccountDeletionDialog
+        closeDeleteDialog={closeDeleteDialog}
+        isDeleteDialogOpen={isDeleteDialogOpen}
+      />
     </>
   );
-});
+};
 
 export default ProfileDrawer;

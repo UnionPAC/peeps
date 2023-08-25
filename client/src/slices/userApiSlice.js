@@ -25,11 +25,34 @@ export const userApiSlice = apiSlice.injectEndpoints({
       }),
     }),
     updateUserProfile: builder.mutation({
-      query: (data) => ({
-        url: `${USERS_URL}/profile`,
-        method: "PUT",
-        body: data,
-      }),
+      query: (data) => {
+        const { name, email, profilePic } = data;
+        console.log("Data being sent to updateUserProfile mutation:", {
+          name,
+          email,
+          profilePic,
+        });
+        const formData = new FormData();
+
+        if (name) {
+          formData.append("name", name);
+        }
+
+        if (email) {
+          formData.append("email", email);
+        }
+
+        if (profilePic) {
+          formData.append("profilePic", profilePic);
+        }
+
+        // return stuff ...
+        return {
+          url: `${USERS_URL}/profile`,
+          method: "PUT",
+          body: formData,
+        };
+      },
     }),
     deleteUserProfile: builder.mutation({
       query: (data) => ({
