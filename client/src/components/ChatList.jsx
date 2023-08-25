@@ -3,11 +3,10 @@ import { HiOutlineSearch } from "react-icons/hi";
 import UserSettingsAndChat from "./UserSettingsAndChat";
 
 const ChatList = () => {
-  
-
   return (
     <Box width="25%" display="flex" flexDirection="column">
       <UserSettingsAndChat />
+      {/* Search Chats */}
       <Flex
         justifyContent="center"
         border="1px"
@@ -27,7 +26,7 @@ const ChatList = () => {
           _focusVisible={false}
         />
       </Flex>
-  
+      {/* List of Chats */ }
     </Box>
   );
 };
