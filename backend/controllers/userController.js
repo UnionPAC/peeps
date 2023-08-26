@@ -8,6 +8,7 @@ import { unlinkSync, writeFileSync } from "fs";
 // @route   GET /api/users?search=
 // @access  Public
 const allUsers = asyncHandler(async (req, res) => {
+  console.log(req.query.search);
   const keyword = req.query.search
     ? {
         $or: [
