@@ -3,15 +3,22 @@ import Chat from "../models/chatModel.js";
 import User from "../models/userModel.js";
 
 //@desc     Create or fetch One to One Chat
-//@route    POST /api/chats/
+//@route    POST /api/chats
 //@access   Private
 const accessChat = asyncHandler(async (req, res) => {
-  const { userId } = req.body;
+  const { id: userId } = req.body;
 
   // must include the user you wish to chat with
   if (!userId) {
     res.status(400);
     throw new Error("Must include a User Id");
+  }
+
+  const userToChat = await User.findById(userId);
+
+  if (!userToChat) {
+    res.status(400);
+    throw new Error("Cannot find the user you are wanting to chat with");
   }
 
   let isChat = await Chat.find({
@@ -32,9 +39,8 @@ const accessChat = asyncHandler(async (req, res) => {
   if (isChat.length > 0) {
     res.send(isChat[0]);
   } else {
-    const userToChatWith = await User.findById(userId);
     const newChatData = {
-      name: `${req.user.username}, ${userToChatWith.username}`,
+      name: "sender",
       isGroupChat: false,
       users: [req.user._id, userId],
     };
@@ -48,13 +54,12 @@ const accessChat = asyncHandler(async (req, res) => {
     } catch (error) {
       res.status(400);
       throw new Error("Failed to create new chat");
-      console.error(error);
     }
   }
 });
 
 //@desc     Fetch all chats for a user
-//@route    GET /api/chats/
+//@route    GET /api/chats
 //@access   Private
 const fetchChats = asyncHandler(async (req, res) => {
   try {
@@ -217,7 +222,7 @@ const addToGroup = asyncHandler(async (req, res) => {
 });
 
 // @desc    Delete chat
-// @route   DELETE /api/chats/
+// @route   DELETE /api/chats
 // @access  Private
 const deleteChat = asyncHandler(async (req, res) => {
   const { chatId } = req.body;

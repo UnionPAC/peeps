@@ -1,34 +1,64 @@
+import { useState, useEffect } from "react";
 import {
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
   Button,
+  Input,
+  ModalFooter,
+  Box,
 } from "@chakra-ui/react";
+import { useSearchUsersQuery } from "../slices/userApiSlice";
+import UserListItem from "./UserListItem";
 
 const CreateChat = ({ isOpen, onClose }) => {
+  const [search, setSearch] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+
+  const { data, isFetching, isLoading } = useSearchUsersQuery(search);
+
+  useEffect(() => {
+    if (search === "") {
+      setSearchResults([]);
+    } else {
+      setSearchResults(data);
+    }
+  }, [search]);
+
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onClose} size="xl">
+      <Modal
+        isOpen={isOpen}
+        onClose={() => {
+          onClose();
+          setSearch("");
+        }}
+        size="xl"
+      >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Create Chat</ModalHeader>
+          <ModalHeader>New Chat</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptate
-            sunt sed obcaecati tenetur eveniet. Odio esse suscipit atque
-            tempora. Odio praesentium eum nesciunt impedit itaque optio
-            perspiciatis, ea cum reprehenderit!
+            <Input
+              placeholder="Search users by name, username or email"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            {/* Show Users (based on input) */}
+            <Box marginY="1rem">
+              {searchResults?.map((user) => (
+                <UserListItem key={user._id} user={user} onClose={onClose} />
+              ))}
+            </Box>
           </ModalBody>
-
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
+            <Button colorScheme="gray" mr={3} onClick={onClose}>
               Close
             </Button>
-            <Button variant="ghost">Secondary Action</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

@@ -5,7 +5,7 @@ const apiSlice = createApi({
     baseUrl: "",
   }), // empty b/c using a proxy
   endpoints: (builder) => ({}),
-  tagTypes: ["User"],
+  tagTypes: ["User", "Chat", "Message"],
 });
 
 export default apiSlice;

@@ -20,13 +20,15 @@ const ChatList = () => {
           bg="transparent"
           _hover={{ bg: "transparent" }}
         />
+
         <Input
-          placeholder="Search or start new chat"
+          placeholder="Search your chats ..."
           border="none"
           _focusVisible={false}
         />
       </Flex>
-      {/* List of Chats */ }
+      {/* List of Chats */}
+      {/* fetch all User Chats: if there is an input value, filter based on input value or else just display all chats */}
     </Box>
   );
 };

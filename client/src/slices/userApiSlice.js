@@ -61,6 +61,9 @@ export const userApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    searchUsers: builder.query({
+      query: (search) => `${USERS_URL}?search=${search}`,
+    }),
   }),
 });
 
@@ -70,4 +73,5 @@ export const {
   useLogoutMutation,
   useUpdateUserProfileMutation,
   useDeleteUserProfileMutation,
+  useSearchUsersQuery,
 } = userApiSlice;
