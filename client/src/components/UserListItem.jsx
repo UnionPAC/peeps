@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useAccessChatMutation } from "../slices/chatApiSlice";
 import { setSelectedChat } from "../slices/chatSlice";
 
-const UserListItem = ({ user, onClose }) => {
+const UserListItem = ({ user, onClose, setSearch }) => {
   const { email, name, username, _id: userToChatId, profilePic } = user;
 
   const dispatch = useDispatch();
@@ -19,9 +19,11 @@ const UserListItem = ({ user, onClose }) => {
       // is equal to the selected chat ID
       dispatch(setSelectedChat({ id: userToChatId }));
       onClose();
+      setSearch("");
       console.log(res);
     } catch (error) {
       console.error(error);
+      setSearch("");
     }
   };
 

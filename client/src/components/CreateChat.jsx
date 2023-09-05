@@ -51,7 +51,12 @@ const CreateChat = ({ isOpen, onClose }) => {
             {/* Show Users (based on input) */}
             <Box marginY="1rem">
               {searchResults?.map((user) => (
-                <UserListItem key={user._id} user={user} onClose={onClose} />
+                <UserListItem
+                  key={user._id}
+                  user={user}
+                  onClose={onClose}
+                  setSearch={setSearch}
+                />
               ))}
             </Box>
           </ModalBody>

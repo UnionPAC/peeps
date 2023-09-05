@@ -64,6 +64,7 @@ const UserSettingsAndChat = () => {
         {/* opens sidebar replacing ChatList with user profile */}
         <Avatar
           name={userInfo.username}
+          src={userInfo.profilePic}
           cursor="pointer"
           size="md"
           onClick={openProfileDrawer}
