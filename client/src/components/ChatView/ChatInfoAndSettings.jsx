@@ -11,7 +11,7 @@ import { HiDotsVertical } from "react-icons/hi";
 
 const ChatInfoAndSettings = () => {
   return (
-    <Flex margin="1rem" justify="space-between">
+    <Flex margin="1rem" justify="space-between" align='center'>
       <Avatar
         name="John Doe"
         src={null}

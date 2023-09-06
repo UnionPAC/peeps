@@ -14,7 +14,7 @@ import { clearCredentials } from "../../slices/authSlice";
 import { useNavigate } from "react-router-dom";
 
 const AccountDeletionDialog = ({ closeDeleteDialog, isDeleteDialogOpen }) => {
-  const [deleteUserProfile, { isLoading }] = useDeleteUserProfileMutation();
+  const [deleteUserProfile] = useDeleteUserProfileMutation();
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
