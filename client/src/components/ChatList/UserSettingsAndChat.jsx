@@ -10,12 +10,12 @@ import {
 } from "@chakra-ui/react";
 import { HiUserGroup, HiDotsVertical } from "react-icons/hi";
 import { HiChatBubbleLeftEllipsis } from "react-icons/hi2";
-import { useLogoutMutation } from "../slices/userApiSlice";
+import { useLogoutMutation } from "../../slices/userApiSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { clearCredentials } from "../slices/authSlice";
-import ProfileDrawer from "./ProfileDrawer";
-import CreateGroup from "./CreateGroup";
-import CreateChat from "./CreateChat";
+import { clearCredentials } from "../../slices/authSlice";
+import ProfileDrawer from "../Misc/ProfileDrawer";
+import CreateGroup from "../Misc/CreateGroup";
+import CreateChat from "../Misc/CreateChat";
 
 const UserSettingsAndChat = () => {
   const dispatch = useDispatch();
@@ -23,21 +23,27 @@ const UserSettingsAndChat = () => {
 
   const [logout] = useLogoutMutation();
 
-  {/* Profile Drawer */}
+  {
+    /* Profile Drawer */
+  }
   const {
     onOpen: openProfileDrawer,
     isOpen: isProfileDrawerOpen,
     onClose: closeProfileDrawer,
   } = useDisclosure();
 
-  {/* Create Group */}
+  {
+    /* Create Group */
+  }
   const {
     onOpen: openGroupModal,
     isOpen: isGroupModalOpen,
     onClose: closeGroupModal,
   } = useDisclosure();
 
-  {/* Create Chat */}
+  {
+    /* Create Chat */
+  }
   const {
     onOpen: openChatModal,
     isOpen: isChatModalOpen,

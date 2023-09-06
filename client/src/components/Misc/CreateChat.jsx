@@ -11,22 +11,22 @@ import {
   ModalFooter,
   Box,
 } from "@chakra-ui/react";
-import { useSearchUsersQuery } from "../slices/userApiSlice";
+import { useSearchUsersQuery } from "../../slices/userApiSlice";
 import UserListItem from "./UserListItem";
 
 const CreateChat = ({ isOpen, onClose }) => {
-  const [search, setSearch] = useState("");
+  const [searchUser, setSearchUser] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
-  const { data, isFetching, isLoading } = useSearchUsersQuery(search);
+  const { data } = useSearchUsersQuery(searchUser);
 
   useEffect(() => {
-    if (search === "") {
+    if (searchUser === "") {
       setSearchResults([]);
     } else {
       setSearchResults(data);
     }
-  }, [search]);
+  }, [searchUser]);
 
   return (
     <>
@@ -34,7 +34,7 @@ const CreateChat = ({ isOpen, onClose }) => {
         isOpen={isOpen}
         onClose={() => {
           onClose();
-          setSearch("");
+          setSearchUser("");
         }}
         size="xl"
       >
@@ -45,19 +45,14 @@ const CreateChat = ({ isOpen, onClose }) => {
           <ModalBody>
             <Input
               placeholder="Search users by name, username or email"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              value={searchUser}
+              onChange={(e) => setSearchUser(e.target.value)}
             />
             {/* Show Users (based on input) */}
             <Box marginY="1rem">
-              {searchResults?.map((user) => (
-                <UserListItem
-                  key={user._id}
-                  user={user}
-                  onClose={onClose}
-                  setSearch={setSearch}
-                />
-              ))}
+              {/* {searchResults?.map((user) => (
+                <UserListItem key={user._id} onClose={onClose} />
+              ))} */}
             </Box>
           </ModalBody>
           <ModalFooter>

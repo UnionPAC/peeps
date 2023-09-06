@@ -21,23 +21,22 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import { HiPencil, HiCheck } from "react-icons/hi";
 import AccountDeletionDialog from "./AccountDeletionDialog";
-import { useUpdateUserProfileMutation } from "../slices/userApiSlice";
+import { useUpdateUserProfileMutation } from "../../slices/userApiSlice";
 import * as Yup from "yup";
-import { setCredentials } from "../slices/authSlice";
+import { setCredentials } from "../../slices/authSlice";
 
 const ProfileDrawer = ({ isOpen, onClose }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [isEdittingName, setIsEdittingName] = useState(false);
   const [isEdittingEmail, setIsEdittingEmail] = useState(false);
-  const [imagePreview, setImagePreview] = useState("");
 
   const { userInfo } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
   const toast = useToast();
 
-  const [updateUser, { isError, isLoading }] = useUpdateUserProfileMutation();
+  const [updateUser] = useUpdateUserProfileMutation();
 
   {
     /* Account Deletion Dialog */

@@ -47,8 +47,10 @@ const registerUser = asyncHandler(async (req, res) => {
     generateToken(res, user._id);
     res.status(201).json({
       _id: user._id,
+      name: user.name || null,
       username: user.username,
       email: user.email,
+      profilePic: user.profilePic || null,
     });
   } else {
     res.status(400);
@@ -68,8 +70,10 @@ const authUser = asyncHandler(async (req, res) => {
     generateToken(res, user._id);
     res.json({
       _id: user._id,
+      name: user.name || null,
       username: user.username,
       email: user.email,
+      profilePic: user.profilePic || null,
     });
   } else {
     res.status(401);

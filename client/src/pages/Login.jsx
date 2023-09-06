@@ -61,6 +61,7 @@ const Login = () => {
           username: values.username,
           password: values.password,
         }).unwrap();
+        console.log(res);
         // dispatch set credentials
         dispatch(setCredentials({ ...res }));
         navigate("/");

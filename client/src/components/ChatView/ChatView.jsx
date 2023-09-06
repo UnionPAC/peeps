@@ -1,10 +1,10 @@
-import { Flex, Box } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import ChatInfoAndSettings from "./ChatInfoAndSettings";
 
 const ChatView = () => {
   return (
     <Box width="100%">
-      <ChatInfoAndSettings />
+      <ChatInfoAndSettings />  
     </Box>
   );
 };

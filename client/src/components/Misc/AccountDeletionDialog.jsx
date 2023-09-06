@@ -8,9 +8,9 @@ import {
   Button,
   useToast,
 } from "@chakra-ui/react";
-import { useDeleteUserProfileMutation } from "../slices/userApiSlice";
+import { useDeleteUserProfileMutation } from "../../slices/userApiSlice";
 import { useDispatch } from "react-redux";
-import { clearCredentials } from "../slices/authSlice";
+import { clearCredentials } from "../../slices/authSlice";
 import { useNavigate } from "react-router-dom";
 
 const AccountDeletionDialog = ({ closeDeleteDialog, isDeleteDialogOpen }) => {
@@ -21,13 +21,9 @@ const AccountDeletionDialog = ({ closeDeleteDialog, isDeleteDialogOpen }) => {
   const toast = useToast();
 
   const handleDeleteAccount = async () => {
-
     try {
-      // userApiSlice: deleteUserProfile
       await deleteUserProfile().unwrap();
-      // clear credentials from local storage
       dispatch(clearCredentials());
-      // navigate to login
       navigate("/");
     } catch (error) {
       console.error(error);
