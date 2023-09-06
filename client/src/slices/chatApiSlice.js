@@ -50,4 +50,12 @@ export const chatApiSlice = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useAccessChatMutation, useFetchChatsMutation } = chatApiSlice;
+export const {
+  useAccessChatMutation,
+  useFetchChatsMutation,
+  useCreateGroupChatMutation,
+  useRenameGroupChatMutation,
+  useRemoveFromGroupMutation,
+  useAddToGroupMutation,
+  useDeleteChatMutation,
+} = chatApiSlice;
