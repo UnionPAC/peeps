@@ -16,7 +16,7 @@ import UserTagItem from "../Misc/UserTagItem";
 import { useState, useEffect } from "react";
 import { useSearchUsersQuery } from "../../slices/userApiSlice";
 import { useRemoveFromGroupMutation } from "../../slices/chatApiSlice";
-import UserListItem from "./UserListItem";
+import UserListItem from "../Misc/UserListItem";
 import { useDispatch } from "react-redux";
 import { setSelectedChat } from "../../slices/authSlice";
 

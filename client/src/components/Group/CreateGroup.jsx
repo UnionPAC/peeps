@@ -15,8 +15,8 @@ import {
 import { useState, useEffect } from "react";
 import { useSearchUsersQuery } from "../../slices/userApiSlice";
 import { useCreateGroupChatMutation } from "../../slices/chatApiSlice";
-import UserListItem from "./UserListItem";
-import UserTagItem from "./UserTagItem";
+import UserListItem from "../Misc/UserListItem";
+import UserTagItem from "../Misc/UserTagItem";
 
 const CreateGroup = ({ isOpen, onClose }) => {
   const [groupName, setGroupName] = useState("");

@@ -12,7 +12,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
-import UserListItem from "./UserListItem";
+import UserListItem from "../Misc/UserListItem";
 
 const GroupInfoModal = ({ isOpen, onClose }) => {
   const { selectedChat } = useSelector((state) => state.auth);
