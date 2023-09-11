@@ -88,6 +88,7 @@ const fetchChats = asyncHandler(async (req, res) => {
 //@route    POST /api/chats/group
 //@access   Private
 const createGroupChat = asyncHandler(async (req, res) => {
+  console.log(req.body);
   // group name and group users must be filled out
   if (!req.body.users) {
     res.status(400);
@@ -135,6 +136,11 @@ const createGroupChat = asyncHandler(async (req, res) => {
 const renameGroupChat = asyncHandler(async (req, res) => {
   const { chatId, chatName } = req.body;
 
+  if (!chatName || chatName === "") {
+    res.status(400);
+    throw new Error("Please enter a group name");
+  }
+
   const updatedChat = await Chat.findByIdAndUpdate(
     chatId,
     {
@@ -158,6 +164,7 @@ const renameGroupChat = asyncHandler(async (req, res) => {
 // @access  Private
 const removeFromGroup = asyncHandler(async (req, res) => {
   const { chatId, userId } = req.body;
+  console.log(chatId, userId);
 
   const chatToUpdate = await Chat.findById(chatId);
 

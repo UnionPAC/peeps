@@ -23,7 +23,7 @@ const ChatList = () => {
 
   const dispatch = useDispatch();
 
-  const [fetchChats, { isLoading }] = useFetchChatsMutation();
+  const [fetchChats] = useFetchChatsMutation();
 
   const fetchAllUserChats = async () => {
     try {
@@ -39,16 +39,17 @@ const ChatList = () => {
   }, [chats]);
 
   return (
-    <Box width="25%" display="flex" flexDirection="column">
+    <Box width="25%" display="flex" flexDirection="column" borderRight='1px solid lightgrey'>
       <UserSettingsAndChat />
       {/* Search Chats */}
       <Flex
         justifyContent="center"
-        border="1px"
         borderColor="gray.200"
         borderRadius="5px"
         width="95%"
         mx="auto"
+        my='.4em'
+        bg='gray.100'
       >
         <IconButton
           icon={<HiOutlineSearch />}
@@ -75,9 +76,9 @@ const ChatList = () => {
               <Flex
                 padding="1rem"
                 cursor="pointer"
-                bg={selectedChat === chat ? "blue.100" : ""}
+                bg={selectedChat?._id === chat?._id ? "blue.100" : ""}
                 _hover={
-                  selectedChat === chat
+                  selectedChat?._id === chat?._id
                     ? { bg: "blue.100" }
                     : { bg: "gray.100" }
                 }
@@ -85,9 +86,22 @@ const ChatList = () => {
                 key={chat._id}
               >
                 {chat.isGroupChat ? (
-                  {
-                    /* GROUP CHAT */
-                  }
+                  <>
+                    <Flex>
+                      <Avatar name={chat.name} size="md" mr={3} />
+                      <Box marginLeft="0.5rem">
+                        <Text fontSize="18px">{chat.name}</Text>
+                        <Text fontSize="sm">
+                          {chat.lastMessage
+                            ? chat.lastMessage.content.length > 50
+                              ? chat.latestMessage.content.substring(0, 51) +
+                                "..."
+                              : chat.latestMessage.content
+                            : "Send first message 👋"}
+                        </Text>
+                      </Box>
+                    </Flex>
+                  </>
                 ) : (
                   <>
                     <Avatar

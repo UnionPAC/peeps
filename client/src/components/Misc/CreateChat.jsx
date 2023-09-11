@@ -13,12 +13,31 @@ import {
 } from "@chakra-ui/react";
 import { useSearchUsersQuery } from "../../slices/userApiSlice";
 import UserListItem from "./UserListItem";
+import { setSelectedChat } from "../../slices/authSlice";
+import { useDispatch } from "react-redux";
+import { useAccessChatMutation } from "../../slices/chatApiSlice";
 
 const CreateChat = ({ isOpen, onClose }) => {
   const [searchUser, setSearchUser] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
   const { data } = useSearchUsersQuery(searchUser);
+
+  const dispatch = useDispatch();
+  const [accessChat] = useAccessChatMutation();
+
+  const handleAccessChat = async (_id) => {
+    try {
+      const res = await accessChat(_id).unwrap();
+
+      dispatch(setSelectedChat(res));
+
+      onClose();
+      setSearchUser("");
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     if (searchUser === "") {
@@ -52,7 +71,11 @@ const CreateChat = ({ isOpen, onClose }) => {
             {/* Show Users (based on input) */}
             <Box marginY="1rem">
               {searchResults?.map((user) => (
-                <UserListItem key={user._id} user={user} onClose={onClose} setSearchUser={setSearchUser} />
+                <UserListItem
+                  key={user._id}
+                  user={user}
+                  handleFunction={() => handleAccessChat(user._id)}
+                />
               ))}
             </Box>
           </ModalBody>

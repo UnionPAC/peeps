@@ -5,7 +5,9 @@ const initialState = {
   userInfo: localStorage.getItem("userInfo")
     ? JSON.parse(localStorage.getItem("userInfo"))
     : null,
-  selectedChat: null,
+  selectedChat: localStorage.getItem("selectedChat")
+    ? JSON.parse(localStorage.getItem("selectedChat"))
+    : null,
   notifications: [],
 };
 

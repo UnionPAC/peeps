@@ -18,33 +18,37 @@ export const chatApiSlice = apiSlice.injectEndpoints({
       }),
     }),
     createGroupChat: builder.mutation({
-      query: () => ({
-        url: `${CHATS_URL}`,
+      query: (data) => ({
+        url: `${CHATS_URL}/group`,
         method: "POST",
+        body: data,
       }),
     }),
     renameGroupChat: builder.mutation({
-      query: () => ({
-        url: `${CHATS_URL}`,
-        method: "POST",
+      query: (data) => ({
+        url: `${CHATS_URL}/rename`,
+        method: "PUT",
+        body: data,
       }),
     }),
     removeFromGroup: builder.mutation({
-      query: () => ({
-        url: `${CHATS_URL}`,
-        method: "POST",
+      query: (data) => ({
+        url: `${CHATS_URL}/groupremove`,
+        method: "PUT",
+        body: data,
       }),
     }),
     addToGroup: builder.mutation({
       query: () => ({
-        url: `${CHATS_URL}`,
-        method: "POST",
+        url: `${CHATS_URL}/groupadd`,
+        method: "PUT",
       }),
     }),
     deleteChat: builder.mutation({
-      query: () => ({
+      query: (data) => ({
         url: `${CHATS_URL}`,
-        method: "POST",
+        method: "DELETE",
+        body: data,
       }),
     }),
   }),

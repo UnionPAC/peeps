@@ -66,7 +66,7 @@ const UserSettingsAndChat = () => {
 
   return (
     <>
-      <Flex alignItems="center" justifyContent="space-between" margin="1rem">
+      <Flex alignItems="center" justifyContent="space-between" padding="1rem" bg="gray.100">
         {/* opens sidebar replacing ChatList with user profile */}
         <Avatar
           name={userInfo.username}
