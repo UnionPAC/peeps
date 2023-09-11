@@ -11,16 +11,19 @@ import {
   Flex,
   Input,
 } from "@chakra-ui/react";
-import { useSelector } from "react-redux";
-import UserTagItem from "../Misc/UserTagItem";
-import { useState, useEffect } from "react";
-import { useSearchUsersQuery } from "../../slices/userApiSlice";
-import { useRemoveFromGroupMutation } from "../../slices/chatApiSlice";
-import UserListItem from "../Misc/UserListItem";
-import { useDispatch } from "react-redux";
-import { setSelectedChat } from "../../slices/authSlice";
 
-const ManageUsersModal = ({ isOpen, onClose }) => {
+import { useState, useEffect } from "react";
+import { useSearchUsersQuery } from "../slices/userApiSlice";
+import {
+  useRemoveFromGroupMutation,
+  useAddToGroupMutation,
+} from "../slices/chatApiSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { setSelectedChat } from "../slices/authSlice";
+import UserListItem from "./UserListItem";
+import UserTagItem from "./UserTagItem";
+
+const ManageGroupUsers = ({ isOpen, onClose }) => {
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
@@ -29,6 +32,7 @@ const ManageUsersModal = ({ isOpen, onClose }) => {
   const { selectedChat } = useSelector((state) => state.auth);
 
   const [removeUser] = useRemoveFromGroupMutation();
+  const [addUser] = useAddToGroupMutation();
 
   const { data } = useSearchUsersQuery(search);
 
@@ -40,6 +44,18 @@ const ManageUsersModal = ({ isOpen, onClose }) => {
     }
   }, [search]);
 
+  const addUserToGroup = async (userId) => {
+    try {
+      const res = await addUser({
+        chatId: selectedChat._id,
+        userId: userId,
+      });
+      dispatch(setSelectedChat(res));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const removeUserFromGroup = async (userId) => {
     try {
       const res = await removeUser({
@@ -47,7 +63,6 @@ const ManageUsersModal = ({ isOpen, onClose }) => {
         userId: userId,
       });
       dispatch(setSelectedChat(res));
-      console.log(res);
     } catch (error) {
       console.log(error);
     }
@@ -78,12 +93,12 @@ const ManageUsersModal = ({ isOpen, onClose }) => {
               fontSize="sm"
             ></Input>
             <Box>
-              {searchResults?.map((user) => {
+              {searchResults.map((user) => {
                 return (
                   <UserListItem
                     user={user}
                     key={user._id}
-                    handleFunction={null}
+                    handleFunction={() => addUserToGroup(user._id)}
                     setSearch={setSearch}
                   />
                 );
@@ -91,7 +106,7 @@ const ManageUsersModal = ({ isOpen, onClose }) => {
             </Box>
             <Flex marginY="1rem">
               {selectedChat?.users
-                .filter((user) => user._id !== selectedChat?.groupAdmin?._id)
+                .filter((user) => user._id !== selectedChat.groupAdmin._id)
                 .map((user) => {
                   return (
                     <UserTagItem
@@ -115,4 +130,4 @@ const ManageUsersModal = ({ isOpen, onClose }) => {
   );
 };
 
-export default ManageUsersModal;
+export default ManageGroupUsers;

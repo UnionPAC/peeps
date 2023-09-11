@@ -1,5 +1,5 @@
 import { Flex } from "@chakra-ui/react";
-import ChatInfoAndSettings from "./ChatInfoAndSettings";
+import ChatInfoAndSettings from "./ChatViewHeader";
 import SingleChat from "./SingleChat";
 
 const ChatView = () => {

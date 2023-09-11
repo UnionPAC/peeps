@@ -6,17 +6,12 @@ import {
   renameGroupChat,
   removeFromGroup,
   addToGroup,
-  deleteChat,
 } from "../controllers/chatController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router
-  .route("/")
-  .get(protect, fetchChats)
-  .post(protect, accessChat)
-  .delete(deleteChat);
+router.route("/").get(protect, fetchChats).post(protect, accessChat);
 router.route("/group").post(protect, createGroupChat);
 router.route("/rename").put(protect, renameGroupChat);
 router.route("/groupremove").put(protect, removeFromGroup);

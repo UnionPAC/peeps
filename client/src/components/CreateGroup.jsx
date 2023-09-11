@@ -13,10 +13,10 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import { useSearchUsersQuery } from "../../slices/userApiSlice";
-import { useCreateGroupChatMutation } from "../../slices/chatApiSlice";
-import UserListItem from "../Misc/UserListItem";
-import UserTagItem from "../Misc/UserTagItem";
+import { useSearchUsersQuery } from "../slices/userApiSlice";
+import { useCreateGroupChatMutation } from "../slices/chatApiSlice";
+import UserListItem from "./UserListItem";
+import UserTagItem from "./UserTagItem";
 
 const CreateGroup = ({ isOpen, onClose }) => {
   const [groupName, setGroupName] = useState("");
@@ -67,16 +67,11 @@ const CreateGroup = ({ isOpen, onClose }) => {
       return;
     }
 
-    // create group
-    console.log(`Creating group with these users: ${selectedUsers}`);
-
-    // start here ...
     try {
       const res = await createGroup({
         name: groupName,
         users: JSON.stringify(selectedUsers),
       }).unwrap();
-      console.log(res);
     } catch (error) {
       console.error(error);
     }

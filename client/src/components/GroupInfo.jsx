@@ -2,7 +2,6 @@ import {
   Modal,
   ModalOverlay,
   ModalContent,
-  ModalHeader,
   ModalBody,
   ModalCloseButton,
   Button,
@@ -12,9 +11,9 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
-import UserListItem from "../Misc/UserListItem";
+import UserListItem from "./UserListItem";
 
-const GroupInfoModal = ({ isOpen, onClose }) => {
+const GroupInfo = ({ isOpen, onClose }) => {
   const { selectedChat } = useSelector((state) => state.auth);
   return (
     <>
@@ -48,4 +47,4 @@ const GroupInfoModal = ({ isOpen, onClose }) => {
   );
 };
 
-export default GroupInfoModal;
+export default GroupInfo;

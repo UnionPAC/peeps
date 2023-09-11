@@ -7,10 +7,10 @@ import {
   AlertDialogOverlay,
   Button,
 } from "@chakra-ui/react";
-import { useRemoveFromGroupMutation } from "../../slices/chatApiSlice";
+import { useRemoveFromGroupMutation } from "../slices/chatApiSlice";
 import { useSelector } from "react-redux";
 
-const LeaveGroupDialog = ({ isOpen, onClose }) => {
+const LeaveChat = ({ isOpen, onClose }) => {
   const [removeUser] = useRemoveFromGroupMutation();
 
   const { userInfo, selectedChat } = useSelector((state) => state.auth);
@@ -35,12 +35,16 @@ const LeaveGroupDialog = ({ isOpen, onClose }) => {
           </AlertDialogHeader>
 
           <AlertDialogBody>
-            Are you sure you want to leave this group chat?
+            Are you sure you want to leave this chat?
           </AlertDialogBody>
 
           <AlertDialogFooter>
             <Button onClick={onClose}>Cancel</Button>
-            <Button colorScheme="red" ml={3} onClick={null}>
+            <Button
+              colorScheme="red"
+              ml={3}
+              onClick={() => removeUserFromGroup(userInfo._id)}
+            >
               Leave Group
             </Button>
           </AlertDialogFooter>
@@ -50,4 +54,4 @@ const LeaveGroupDialog = ({ isOpen, onClose }) => {
   );
 };
 
-export default LeaveGroupDialog;
+export default LeaveChat;

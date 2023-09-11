@@ -39,9 +39,10 @@ export const chatApiSlice = apiSlice.injectEndpoints({
       }),
     }),
     addToGroup: builder.mutation({
-      query: () => ({
+      query: (data) => ({
         url: `${CHATS_URL}/groupadd`,
         method: "PUT",
+        body: data,
       }),
     }),
     deleteChat: builder.mutation({

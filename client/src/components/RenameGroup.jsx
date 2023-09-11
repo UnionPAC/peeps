@@ -12,11 +12,11 @@ import {
 } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import { useState } from "react";
-import { useRenameGroupChatMutation } from "../../slices/chatApiSlice";
-import { setSelectedChat } from "../../slices/authSlice";
+import { useRenameGroupChatMutation } from "../slices/chatApiSlice";
+import { setSelectedChat } from "../slices/authSlice";
 import { useDispatch } from "react-redux";
 
-const RenameGroupModal = ({ isOpen, onClose }) => {
+const RenameGroup = ({ isOpen, onClose }) => {
   const [groupName, setGroupName] = useState("");
 
   const dispatch = useDispatch();
@@ -42,6 +42,7 @@ const RenameGroupModal = ({ isOpen, onClose }) => {
         chatName: groupName,
       }).unwrap();
       dispatch(setSelectedChat(res));
+      onClose();
     } catch (error) {
       toast({
         title: error.data.message,
@@ -76,4 +77,4 @@ const RenameGroupModal = ({ isOpen, onClose }) => {
   );
 };
 
-export default RenameGroupModal;
+export default RenameGroup;

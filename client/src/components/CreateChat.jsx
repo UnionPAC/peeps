@@ -11,11 +11,11 @@ import {
   ModalFooter,
   Box,
 } from "@chakra-ui/react";
-import { useSearchUsersQuery } from "../../slices/userApiSlice";
+import { useSearchUsersQuery } from "../slices/userApiSlice";
 import UserListItem from "./UserListItem";
-import { setSelectedChat } from "../../slices/authSlice";
+import { setSelectedChat } from "../slices/authSlice";
 import { useDispatch } from "react-redux";
-import { useAccessChatMutation } from "../../slices/chatApiSlice";
+import { useAccessChatMutation } from "../slices/chatApiSlice";
 
 const CreateChat = ({ isOpen, onClose }) => {
   const [searchUser, setSearchUser] = useState("");
@@ -75,6 +75,7 @@ const CreateChat = ({ isOpen, onClose }) => {
                   key={user._id}
                   user={user}
                   handleFunction={() => handleAccessChat(user._id)}
+                  setSearch={setSearchUser}
                 />
               ))}
             </Box>

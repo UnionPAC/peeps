@@ -11,7 +11,7 @@ const accessChat = asyncHandler(async (req, res) => {
   // must include the user you wish to chat with
   if (!userId) {
     res.status(400);
-    throw new Error("Must include a User Id");
+    throw new Error("Must include a user id");
   }
 
   const userToChat = await User.findById(userId);
@@ -164,17 +164,16 @@ const renameGroupChat = asyncHandler(async (req, res) => {
 // @access  Private
 const removeFromGroup = asyncHandler(async (req, res) => {
   const { chatId, userId } = req.body;
-  console.log(chatId, userId);
 
   const chatToUpdate = await Chat.findById(chatId);
 
   if (!chatToUpdate) {
-    res.status(404).send("Chat not found.");
+    res.status(404).send("Chat not found");
     return;
   }
 
   if (req.user._id.toString() !== chatToUpdate.groupAdmin.toString()) {
-    res.status(403).send("Only the group admin can remove user.");
+    res.status(403).send("Only the group admin can remove users");
     return;
   }
 
@@ -203,12 +202,12 @@ const addToGroup = asyncHandler(async (req, res) => {
   const chatToUpdate = await Chat.findById(chatId);
 
   if (!chatToUpdate) {
-    res.status(404).send("Chat not found.");
+    res.status(404).send("Chat not found");
     return;
   }
 
   if (req.user._id.toString() !== chatToUpdate.groupAdmin.toString()) {
-    res.status(403).send("Only the group admin can add user.");
+    res.status(403).send("Only the group admin can add users");
     return;
   }
 
@@ -228,22 +227,7 @@ const addToGroup = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Delete chat
-// @route   DELETE /api/chats
-// @access  Private
-const deleteChat = asyncHandler(async (req, res) => {
-  const { chatId } = req.body;
 
-  const chat = await Chat.findById(chatId);
-
-  if (chat) {
-    await Chat.deleteOne(chat);
-    res.status(200).json({ message: "Successfully deleted chat!" });
-  } else {
-    res.status(404);
-    throw new Error("Chat not found!");
-  }
-});
 
 export {
   accessChat,
@@ -252,5 +236,4 @@ export {
   renameGroupChat,
   removeFromGroup,
   addToGroup,
-  deleteChat,
 };

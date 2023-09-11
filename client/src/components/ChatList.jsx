@@ -1,22 +1,12 @@
 import { useEffect, useState } from "react";
-import {
-  Box,
-  Flex,
-  Input,
-  IconButton,
-  Avatar,
-  AvatarBadge,
-  Text,
-} from "@chakra-ui/react";
-import { HiOutlineSearch } from "react-icons/hi";
-import UserSettingsAndChat from "./UserSettingsAndChat";
-import { useFetchChatsMutation } from "../../slices/chatApiSlice";
+import { Box, Flex, Avatar, Text } from "@chakra-ui/react";
+import ChatListHeader from "./ChatListHeader";
+import { useFetchChatsMutation } from "../slices/chatApiSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { setSelectedChat } from "../../slices/authSlice";
-import { getSender } from "../../utils/ChatHelpers";
+import { setSelectedChat } from "../slices/authSlice";
+import { getSenderUsername, getFullSender } from "../utils/ChatLogicHelpers";
 
 const ChatList = () => {
-  const [searchKeyword, setSearchKeyword] = useState("");
   const [chats, setChats] = useState([]);
 
   const { userInfo, selectedChat } = useSelector((state) => state.auth);
@@ -25,7 +15,7 @@ const ChatList = () => {
 
   const [fetchChats] = useFetchChatsMutation();
 
-  const fetchAllUserChats = async () => {
+  const fetchAllChats = async () => {
     try {
       const res = await fetchChats().unwrap();
       setChats(res);
@@ -35,43 +25,22 @@ const ChatList = () => {
   };
 
   useEffect(() => {
-    fetchAllUserChats();
+    fetchAllChats();
   }, [chats]);
 
   return (
-    <Box width="25%" display="flex" flexDirection="column" borderRight='1px solid lightgrey'>
-      <UserSettingsAndChat />
-      {/* Search Chats */}
-      <Flex
-        justifyContent="center"
-        borderColor="gray.200"
-        borderRadius="5px"
-        width="95%"
-        mx="auto"
-        my='.4em'
-        bg='gray.100'
-      >
-        <IconButton
-          icon={<HiOutlineSearch />}
-          bg="transparent"
-          _hover={{ bg: "transparent" }}
-        />
+    <Box
+      width="25%"
+      display="flex"
+      flexDirection="column"
+      borderRight="1px solid lightgrey"
+    >
+      <ChatListHeader />
 
-        <Input
-          value={searchKeyword}
-          onChange={(e) => setSearchKeyword(e.target.value)}
-          placeholder="Search your chats ..."
-          border="none"
-          _focusVisible={false}
-        />
-      </Flex>
       {/* List of Chats */}
-      {/* fetch all User Chats: if there is an input value, filter based on input value or else just display all chats */}
       {chats.length > 0 ? (
         <Box overflowY="scroll">
           {chats.map((chat) => {
-            // console.log(chat);
-            const sender = getSender(userInfo, chat.users);
             return (
               <Flex
                 padding="1rem"
@@ -107,14 +76,15 @@ const ChatList = () => {
                     <Avatar
                       size="md"
                       mr={3}
-                      name={sender.name}
-                      src={sender.profilePic}
+                      name={getFullSender(userInfo, chat.users).name}
+                      src={getFullSender(userInfo, chat.users).profilePic}
                     >
-                      <AvatarBadge boxSize="1em" bg="green.500" />
+                      {/* <AvatarBadge boxSize="1em" bg="green.500" /> */}
                     </Avatar>
                     <Box marginLeft=".5rem">
-                      {/* Sender Name */}
-                      <Text fontSize="18px">{sender.username}</Text>
+                      <Text fontSize="18px">
+                        {getSenderUsername(userInfo, chat.users)}
+                      </Text>
                       {/* Last Message */}
                       <Text fontSize="sm">
                         {chat.lastMessage

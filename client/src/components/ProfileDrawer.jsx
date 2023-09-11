@@ -20,10 +20,10 @@ import {
 } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { HiPencil, HiCheck } from "react-icons/hi";
-import AccountDeletionDialog from "./AccountDeletionDialog";
-import { useUpdateUserProfileMutation } from "../../slices/userApiSlice";
+import AccountDeletionDialog from "./DeleteAccount";
+import { useUpdateUserProfileMutation } from "../slices/userApiSlice";
 import * as Yup from "yup";
-import { setCredentials } from "../../slices/authSlice";
+import { setCredentials } from "../slices/authSlice";
 
 const ProfileDrawer = ({ isOpen, onClose }) => {
   const [name, setName] = useState("");

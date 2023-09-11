@@ -10,12 +10,12 @@ import {
 } from "@chakra-ui/react";
 import { HiUserGroup, HiDotsVertical } from "react-icons/hi";
 import { HiChatBubbleLeftEllipsis } from "react-icons/hi2";
-import { useLogoutMutation } from "../../slices/userApiSlice";
+import { useLogoutMutation } from "../slices/userApiSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { clearCredentials } from "../../slices/authSlice";
-import ProfileDrawer from "../Misc/ProfileDrawer";
-import CreateGroup from "../Misc/CreateGroup";
-import CreateChat from "../Misc/CreateChat";
+import { clearCredentials } from "../slices/authSlice";
+import ProfileDrawer from "./ProfileDrawer";
+import CreateGroup from "./CreateGroup";
+import CreateChat from "./CreateChat";
 
 const UserSettingsAndChat = () => {
   const dispatch = useDispatch();
@@ -66,7 +66,12 @@ const UserSettingsAndChat = () => {
 
   return (
     <>
-      <Flex alignItems="center" justifyContent="space-between" padding="1rem" bg="gray.100">
+      <Flex
+        alignItems="center"
+        justifyContent="space-between"
+        padding="1rem"
+        bg="gray.100"
+      >
         {/* opens sidebar replacing ChatList with user profile */}
         <Avatar
           name={userInfo.username}
