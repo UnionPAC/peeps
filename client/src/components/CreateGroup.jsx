@@ -17,12 +17,15 @@ import { useSearchUsersQuery } from "../slices/userApiSlice";
 import { useCreateGroupChatMutation } from "../slices/chatApiSlice";
 import UserListItem from "./UserListItem";
 import UserTagItem from "./UserTagItem";
+import { useSelector } from "react-redux";
 
 const CreateGroup = ({ isOpen, onClose }) => {
   const [groupName, setGroupName] = useState("");
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
+
+  const { userInfo } = useSelector((state) => state.auth);
 
   const { data } = useSearchUsersQuery(search);
   const [createGroup] = useCreateGroupChatMutation();
@@ -128,16 +131,18 @@ const CreateGroup = ({ isOpen, onClose }) => {
               })}
             </Flex>
             <Box>
-              {searchResults?.map((user) => {
-                return (
-                  <UserListItem
-                    user={user}
-                    key={user._id}
-                    handleFunction={() => handleGroup(user)}
-                    setSearch={setSearch}
-                  />
-                );
-              })}
+              {searchResults
+                ?.filter((user) => user._id !== userInfo._id)
+                .map((user) => {
+                  return (
+                    <UserListItem
+                      user={user}
+                      key={user._id}
+                      handleFunction={() => handleGroup(user)}
+                      setSearch={setSearch}
+                    />
+                  );
+                })}
             </Box>
           </ModalBody>
           <ModalFooter>

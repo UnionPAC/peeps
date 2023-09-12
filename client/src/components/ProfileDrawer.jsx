@@ -96,10 +96,6 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
     const selectedImage = e.target.files[0];
 
     if (selectedImage) {
-      // Create Profile Pic Preview
-      const imageUrl = URL.createObjectURL(selectedImage);
-      setImagePreview(imageUrl);
-
       try {
         // update user profilePic
         const res = await updateUser({
@@ -129,7 +125,7 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
             <Flex justifyContent="center" alignItems="center">
               <Avatar
                 name={null}
-                src={userInfo.profilePic || imagePreview}
+                src={userInfo.profilePic || null}
                 size="2xl"
                 margin="2em"
                 width="180px"

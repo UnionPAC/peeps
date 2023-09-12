@@ -8,12 +8,12 @@ import {
   Button,
   useToast,
 } from "@chakra-ui/react";
-import { useDeleteChatMutation } from "../slices/chatApiSlice";
 import { useSelector } from "react-redux";
 import { clearSelectedChat } from "../slices/authSlice";
 import { useDispatch } from "react-redux";
+import { useDeleteChatMutation } from "../slices/chatApiSlice";
 
-const DeleteChat = ({ isOpen, onClose }) => {
+const DeleteGroup = ({ isOpen, onClose }) => {
   const { selectedChat } = useSelector((state) => state.auth);
 
   const [deleteChat] = useDeleteChatMutation();
@@ -26,17 +26,13 @@ const DeleteChat = ({ isOpen, onClose }) => {
     containerStyle: { fontSize: "14px" },
   });
 
-  const handleDelete = async () => {
+  const handleDeleteGroup = async () => {
     try {
-      const res = await deleteChat({ chatId: selectedChat._id });
+      await deleteChat({ chatId: selectedChat._id });
       dispatch(clearSelectedChat());
       onClose();
     } catch (error) {
       console.error(error);
-      toast({
-        title: error.data.message,
-        status: "error",
-      });
     }
   };
 
@@ -49,13 +45,13 @@ const DeleteChat = ({ isOpen, onClose }) => {
           </AlertDialogHeader>
 
           <AlertDialogBody>
-            Are you sure you want to delete this chat? This action cannot be
+            Are you sure you want to delete this group? This action cannot be
             undone.
           </AlertDialogBody>
 
           <AlertDialogFooter>
             <Button onClick={onClose}>Cancel</Button>
-            <Button colorScheme="red" ml={3} onClick={handleDelete}>
+            <Button colorScheme="red" ml={3} onClick={handleDeleteGroup}>
               Delete
             </Button>
           </AlertDialogFooter>
@@ -65,4 +61,4 @@ const DeleteChat = ({ isOpen, onClose }) => {
   );
 };
 
-export default DeleteChat;
+export default DeleteGroup;

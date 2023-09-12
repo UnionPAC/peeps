@@ -15,12 +15,12 @@ import { clearSelectedChat } from "../slices/authSlice";
 import ManageGroupUsers from "./ManageGroupUsers";
 import RenameGroup from "./RenameGroup";
 import GroupInfo from "./GroupInfo";
-import DeleteChat from "./DeleteChat";
-import LeaveChat from "./LeaveChat";
-import ContactInfoModal from "./ContactInfoModal";
+import LeaveChat from "./LeaveGroup";
+import ContactInfo from "./ContactInfo";
+import DeleteGroup from "./DeleteGroup";
 import { getFullSender } from "../utils/ChatLogicHelpers";
 
-const ChatInfoAndSettings = () => {
+const ChatViewHeader = () => {
   const dispatch = useDispatch();
   const { userInfo, selectedChat } = useSelector((state) => state.auth);
 
@@ -33,66 +33,57 @@ const ChatInfoAndSettings = () => {
   };
 
   {
-    /* Manage Users Modal */
+    /* Manage Users  */
   }
   const {
-    onOpen: openManageUsersModal,
-    isOpen: isManageUsersModalOpen,
-    onClose: closeManageUsersModal,
+    onOpen: openManageUsers,
+    isOpen: isManageUsersOpen,
+    onClose: closeManageUsers,
   } = useDisclosure();
 
   {
-    /* Rename Group Modal */
+    /* Rename Group  */
   }
   const {
-    onOpen: openRenameGroupModal,
-    isOpen: isRenameGroupModalOpen,
-    onClose: closeRenameGroupModal,
+    onOpen: openRenameGroup,
+    isOpen: isRenameGroupOpen,
+    onClose: closeRenameGroup,
   } = useDisclosure();
 
   {
-    /* Group Info Modal */
+    /* Group Info */
   }
   const {
-    onOpen: openGroupInfoModal,
-    isOpen: isGroupInfoModalOpen,
-    onClose: closeGroupInfoModal,
+    onOpen: openGroupInfo,
+    isOpen: isGroupInfoOpen,
+    onClose: closeGroupInfo,
   } = useDisclosure();
 
   {
-    /* Contact Info Modal */
+    /* Contact Info  */
   }
   const {
-    onOpen: openContactInfoModal,
-    isOpen: isContactInfoModalOpen,
-    onClose: closeContactInfoModal,
+    onOpen: openContactInfo,
+    isOpen: isContactInfoOpen,
+    onClose: closeContactInfo,
   } = useDisclosure();
 
   {
-    /* Delete Single Chat Dialog */
+    /* Leave Chat  */
   }
   const {
-    onOpen: openDeleteSingleChatDialog,
-    isOpen: isDeleteSingleChatDialogOpen,
-    onClose: closeDeleteSingleChatDialog,
+    onOpen: openLeaveChat,
+    isOpen: isLeaveChatOpen,
+    onClose: closeLeaveChat,
   } = useDisclosure();
 
   {
-    /* Delete Group Dialog */
+    /* Delete Group  */
   }
   const {
-    onOpen: openDeleteGroupDialog,
-    isOpen: isDeleteGroupDialogOpen,
-    onClose: closeDeleteGroupDialog,
-  } = useDisclosure();
-
-  {
-    /* Leave Group Dialog */
-  }
-  const {
-    onOpen: openLeaveGroupDialog,
-    isOpen: isLeaveGroupDialogOpen,
-    onClose: closeLeaveGroupDialog,
+    onOpen: openDeleteGroup,
+    isOpen: isDeleteGroupOpen,
+    onClose: closeDeleteGroup,
   } = useDisclosure();
 
   return (
@@ -112,7 +103,7 @@ const ChatInfoAndSettings = () => {
                   name={selectedChat.name}
                   cursor="pointer"
                   size="md"
-                  onClick={openGroupInfoModal}
+                  onClick={openGroupInfo}
                 />
                 <Text marginLeft="10px">{selectedChat.name}</Text>
               </Flex>
@@ -125,47 +116,33 @@ const ChatInfoAndSettings = () => {
                   fontSize="1.4rem"
                 />
                 <MenuList>
-                  <MenuItem onClick={openGroupInfoModal}>Group info</MenuItem>
-                  <MenuItem onClick={openRenameGroupModal}>
-                    Rename group
-                  </MenuItem>
+                  <MenuItem onClick={openGroupInfo}>Group info</MenuItem>
+                  <MenuItem onClick={openRenameGroup}>Rename group</MenuItem>
                   {userInfo._id === selectedChat.groupAdmin._id && (
-                    <MenuItem onClick={openManageUsersModal}>
-                      Manage users
-                    </MenuItem>
+                    <MenuItem onClick={openManageUsers}>Manage users</MenuItem>
                   )}
                   <MenuItem onClick={closeChat}>Close chat</MenuItem>
                   {userInfo._id === selectedChat.groupAdmin._id ? (
-                    <MenuItem onClick={openDeleteGroupDialog}>
-                      Delete group
-                    </MenuItem>
+                    <MenuItem onClick={openDeleteGroup}>Delete group</MenuItem>
                   ) : (
-                    <MenuItem onClick={openLeaveGroupDialog}>
-                      Leave group
-                    </MenuItem>
+                    <MenuItem onClick={openLeaveChat}>Leave group</MenuItem>
                   )}
                 </MenuList>
               </Menu>
             </Flex>
-            <GroupInfo
-              onClose={closeGroupInfoModal}
-              isOpen={isGroupInfoModalOpen}
-            />
+            <GroupInfo onClose={closeGroupInfo} isOpen={isGroupInfoOpen} />
             <RenameGroup
-              onClose={closeRenameGroupModal}
-              isOpen={isRenameGroupModalOpen}
+              onClose={closeRenameGroup}
+              isOpen={isRenameGroupOpen}
             />
             <ManageGroupUsers
-              onClose={closeManageUsersModal}
-              isOpen={isManageUsersModalOpen}
+              onClose={closeManageUsers}
+              isOpen={isManageUsersOpen}
             />
-            <LeaveChat
-              onClose={closeLeaveGroupDialog}
-              isOpen={isLeaveGroupDialogOpen}
-            />
-            <DeleteChat
-              onClose={closeDeleteGroupDialog}
-              isOpen={isDeleteGroupDialogOpen}
+            <LeaveChat onClose={closeLeaveChat} isOpen={isLeaveChatOpen} />
+            <DeleteGroup
+              onClose={closeDeleteGroup}
+              isOpen={isDeleteGroupOpen}
             />
           </>
         ) : (
@@ -179,13 +156,13 @@ const ChatInfoAndSettings = () => {
             >
               <Flex align="center">
                 <Avatar
-                  name={getFullSender(userInfo, selectedChat.users).name}
+                  name={getFullSender(userInfo, selectedChat?.users).name}
                   cursor="pointer"
                   size="md"
-                  onClick={openContactInfoModal}
+                  onClick={openContactInfo}
                 />
                 <Text marginLeft="10px">
-                  {getFullSender(userInfo, selectedChat.users).username}
+                  {getFullSender(userInfo, selectedChat?.users).username}
                 </Text>
               </Flex>
 
@@ -197,19 +174,14 @@ const ChatInfoAndSettings = () => {
                   fontSize="1.4rem"
                 />
                 <MenuList>
-                  <MenuItem onClick={openContactInfoModal}>
-                    Contact info
-                  </MenuItem>
+                  <MenuItem onClick={openContactInfo}>Contact info</MenuItem>
                   <MenuItem onClick={closeChat}>Close chat</MenuItem>
-                  <MenuItem onClick={openDeleteSingleChatDialog}>
-                    Delete chat
-                  </MenuItem>
                 </MenuList>
               </Menu>
             </Flex>
-            <ContactInfoModal
-              onClose={closeContactInfoModal}
-              isOpen={isContactInfoModalOpen}
+            <ContactInfo
+              onClose={closeContactInfo}
+              isOpen={isContactInfoOpen}
             />
           </>
         )
@@ -220,4 +192,4 @@ const ChatInfoAndSettings = () => {
   );
 };
 
-export default ChatInfoAndSettings;
+export default ChatViewHeader;

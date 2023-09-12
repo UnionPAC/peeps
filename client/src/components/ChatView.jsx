@@ -1,11 +1,11 @@
 import { Flex } from "@chakra-ui/react";
-import ChatInfoAndSettings from "./ChatViewHeader";
+import ChatViewHeader from "./ChatViewHeader";
 import SingleChat from "./SingleChat";
 
 const ChatView = () => {
   return (
-    <Flex flexDirection='column' width="100%">
-      <ChatInfoAndSettings />
+    <Flex flexDirection="column" width="100%">
+      <ChatViewHeader />
       <SingleChat />
     </Flex>
   );

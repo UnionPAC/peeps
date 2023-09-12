@@ -12,7 +12,7 @@ import { HiUserGroup, HiDotsVertical } from "react-icons/hi";
 import { HiChatBubbleLeftEllipsis } from "react-icons/hi2";
 import { useLogoutMutation } from "../slices/userApiSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { clearCredentials } from "../slices/authSlice";
+import { clearCredentials, clearSelectedChat } from "../slices/authSlice";
 import ProfileDrawer from "./ProfileDrawer";
 import CreateGroup from "./CreateGroup";
 import CreateChat from "./CreateChat";
@@ -54,6 +54,7 @@ const UserSettingsAndChat = () => {
     try {
       await logout().unwrap();
       dispatch(clearCredentials());
+      dispatch(clearSelectedChat());
       navigate("/");
     } catch (error) {
       console.error(error);

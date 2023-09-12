@@ -6,21 +6,34 @@ import {
   AlertDialogContent,
   AlertDialogOverlay,
   Button,
+  useToast,
 } from "@chakra-ui/react";
-import { useRemoveFromGroupMutation } from "../slices/chatApiSlice";
 import { useSelector } from "react-redux";
+import { clearSelectedChat } from "../slices/authSlice";
+import { useDispatch } from "react-redux";
+import { useRemoveFromGroupMutation } from "../slices/chatApiSlice";
 
-const LeaveChat = ({ isOpen, onClose }) => {
-  const [removeUser] = useRemoveFromGroupMutation();
-
+const LeaveGroup = ({ isOpen, onClose }) => {
   const { userInfo, selectedChat } = useSelector((state) => state.auth);
 
-  const removeUserFromGroup = async (userId) => {
+  const [removeUser] = useRemoveFromGroupMutation();
+
+  const dispatch = useDispatch();
+  const toast = useToast({
+    isClosable: true,
+    variant: "left-accent",
+    position: "top-right",
+    containerStyle: { fontSize: "14px" },
+  });
+
+  const handleLeaveChat = async () => {
     try {
       const res = await removeUser({
         chatId: selectedChat._id,
-        userId: userId,
+        userId: userInfo._id,
       });
+      dispatch(clearSelectedChat());
+      onClose();
     } catch (error) {
       console.error(error);
     }
@@ -31,21 +44,18 @@ const LeaveChat = ({ isOpen, onClose }) => {
       <AlertDialogOverlay>
         <AlertDialogContent>
           <AlertDialogHeader fontSize="lg" fontWeight="bold">
-            Leave Group
+            Delete Group
           </AlertDialogHeader>
 
           <AlertDialogBody>
-            Are you sure you want to leave this chat?
+            Are you sure you want to leave this group? This action cannot be
+            undone.
           </AlertDialogBody>
 
           <AlertDialogFooter>
             <Button onClick={onClose}>Cancel</Button>
-            <Button
-              colorScheme="red"
-              ml={3}
-              onClick={() => removeUserFromGroup(userInfo._id)}
-            >
-              Leave Group
+            <Button colorScheme="red" ml={3} onClick={handleLeaveChat}>
+              Leave
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -54,4 +64,4 @@ const LeaveChat = ({ isOpen, onClose }) => {
   );
 };
 
-export default LeaveChat;
+export default LeaveGroup;
