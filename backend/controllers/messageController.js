@@ -3,39 +3,55 @@ import Message from "../models/messageModel.js";
 import User from "../models/userModel.js";
 import Chat from "../models/chatModel.js";
 
-//@desc      Get all Messages from a specific chat
+//@desc      Get all messages from a specific chat
 //@route     GET /api/messages/:chatId
 //@access    Private
-const allChatMessages = asyncHandler(async (req, res) => {
-  res.status(200).json({ message: "All Chat Messages" });
+const allMessages = asyncHandler(async (req, res) => {
+  try {
+    const messages = await Message.find({ chat: req.params.chatId })
+      .populate("sender", "username, profilePic, email")
+      .populate("chat");
+    res.status(200).json(messages);
+  } catch (error) {
+    res.status(400);
+    throw new Error(error.message);
+  }
 });
 
 //@desc      Create New Message
 //@route     POST /api/messages/
 //@access    Private
 const sendMessage = asyncHandler(async (req, res) => {
+  // what is required to send a message?
+  // chatId, message, messageSender
   const { content, chatId } = req.body;
 
   if (!content) {
     res.status(400);
-    throw new Error("Message content cannot be empty");
+    throw new Error("Invalid Data: Content required");
   }
 
   if (!chatId) {
     res.status(400);
-    throw new Error("Chat Id must be provided");
+    throw new Error("Invalid Data: ChatId required");
   }
 
-  const newMsg = {
+  const chat = await Chat.findById(chatId);
+  const userInChat = chat.users.includes(req.user._id);
+
+  if (!userInChat) {
+    res.status(403);
+    throw new Error("Cannot send a message to a group you aren't in!");
+  }
+
+  const newMessage = {
     sender: req.user._id,
     content: content,
     chat: chatId,
   };
 
   try {
-    let message = await Message.create(newMsg);
-
-    message = await message.populate("sender", "username profilePic");
+    let message = await Message.create(newMessage);
     message = await message.populate("chat");
     message = await User.populate(message, {
       path: "chat.users",
@@ -50,4 +66,4 @@ const sendMessage = asyncHandler(async (req, res) => {
   }
 });
 
-export { allChatMessages, sendMessage };
+export { allMessages, sendMessage };
