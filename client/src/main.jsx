@@ -14,7 +14,7 @@ import NotFound from "./pages/NotFound.jsx";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
-import PrivateRoute from "./components/PrivateRoute.jsx";
+import PrivateRoute from "./components/Authentication/PrivateRoute.jsx";
 import "./index.css";
 
 const router = createBrowserRouter(

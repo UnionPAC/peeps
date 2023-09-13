@@ -22,6 +22,7 @@ import UserTagItem from "../../User/UserTagItem";
 import {
   useRemoveFromGroupMutation,
   useAddToGroupMutation,
+  useFetchChatsQuery,
 } from "../../../slices/chatApiSlice";
 
 const ManageGroupUsers = ({ isOpen, onClose }) => {
@@ -39,6 +40,7 @@ const ManageGroupUsers = ({ isOpen, onClose }) => {
   const { selectedChat } = useSelector((state) => state.auth);
 
   const { data } = useSearchUsersQuery(search);
+  const { refetch } = useFetchChatsQuery();
 
   const [addUser] = useAddToGroupMutation();
   const [removeUser] = useRemoveFromGroupMutation();
@@ -57,6 +59,7 @@ const ManageGroupUsers = ({ isOpen, onClose }) => {
         userId: userId,
       }).unwrap();
       dispatch(setSelectedChat(res));
+      refetch();
     } catch (error) {}
   };
 
@@ -67,6 +70,7 @@ const ManageGroupUsers = ({ isOpen, onClose }) => {
         userId: userId,
       }).unwrap();
       dispatch(setSelectedChat(res));
+      refetch();
     } catch (error) {
       console.error(error);
     }

@@ -15,13 +15,17 @@ import { useSearchUsersQuery } from "../../slices/userApiSlice";
 import UserListItem from "../User/UserListItem";
 import { setSelectedChat } from "../../slices/authSlice";
 import { useDispatch } from "react-redux";
-import { useAccessChatMutation } from "../../slices/chatApiSlice";
+import {
+  useAccessChatMutation,
+  useFetchChatsQuery,
+} from "../../slices/chatApiSlice";
 
 const CreateChat = ({ isOpen, onClose }) => {
   const [searchUser, setSearchUser] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
   const { data } = useSearchUsersQuery(searchUser);
+  const { refetch } = useFetchChatsQuery();
 
   const dispatch = useDispatch();
   const [accessChat] = useAccessChatMutation();
@@ -34,6 +38,7 @@ const CreateChat = ({ isOpen, onClose }) => {
 
       onClose();
       setSearchUser("");
+      refetch();
     } catch (error) {
       console.error(error);
     }

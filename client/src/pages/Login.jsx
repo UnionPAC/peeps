@@ -14,6 +14,7 @@ import {
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { useLoginMutation } from "../slices/userApiSlice";
+import { useFetchChatsQuery } from "../slices/chatApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { setCredentials } from "../slices/authSlice";
@@ -43,6 +44,8 @@ const Login = () => {
     containerStyle: { fontSize: "14px" },
   });
 
+  const { refetch } = useFetchChatsQuery();
+
   const [login, { isLoading }] = useLoginMutation();
 
   const { userInfo } = useSelector((state) => state.auth);
@@ -65,6 +68,7 @@ const Login = () => {
         // dispatch set credentials
         dispatch(setCredentials({ ...res }));
         navigate("/");
+        refetch();
       } catch (error) {
         console.error(error);
         toast({

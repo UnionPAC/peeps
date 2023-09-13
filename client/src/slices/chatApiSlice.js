@@ -11,7 +11,7 @@ export const chatApiSlice = apiSlice.injectEndpoints({
         body: { id },
       }),
     }),
-    fetchChats: builder.mutation({
+    fetchChats: builder.query({
       query: () => ({
         url: `${CHATS_URL}`,
         method: "GET",
@@ -57,7 +57,7 @@ export const chatApiSlice = apiSlice.injectEndpoints({
 
 export const {
   useAccessChatMutation,
-  useFetchChatsMutation,
+  useFetchChatsQuery,
   useCreateGroupChatMutation,
   useRenameGroupChatMutation,
   useRemoveFromGroupMutation,

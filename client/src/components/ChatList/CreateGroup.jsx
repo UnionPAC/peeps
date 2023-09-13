@@ -14,7 +14,10 @@ import {
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { useSearchUsersQuery } from "../../slices/userApiSlice";
-import { useCreateGroupChatMutation } from "../../slices/chatApiSlice";
+import {
+  useCreateGroupChatMutation,
+  useFetchChatsQuery,
+} from "../../slices/chatApiSlice";
 import UserListItem from "../User/UserListItem";
 import UserTagItem from "../User/UserTagItem";
 import { useSelector } from "react-redux";
@@ -28,6 +31,8 @@ const CreateGroup = ({ isOpen, onClose }) => {
   const { userInfo } = useSelector((state) => state.auth);
 
   const { data } = useSearchUsersQuery(search);
+  const { refetch } = useFetchChatsQuery();
+
   const [createGroup] = useCreateGroupChatMutation();
 
   const toast = useToast({
@@ -83,6 +88,7 @@ const CreateGroup = ({ isOpen, onClose }) => {
     setGroupName("");
     setSelectedUsers([]);
     onClose();
+    refetch();
   };
 
   const handleDeleteUser = async (userToDelete) => {

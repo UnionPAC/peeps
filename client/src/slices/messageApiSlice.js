@@ -11,8 +11,14 @@ export const messageApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    fetchMessages: builder.query({
+      query: (chatId) => ({
+        url: `${MESSAGES_URL}/${chatId}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useFetchMessagesMutation, useSendMessageMutation } =
+export const { useFetchMessagesQuery, useSendMessageMutation } =
   messageApiSlice;

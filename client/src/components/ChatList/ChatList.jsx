@@ -1,16 +1,17 @@
-import { useState } from "react";
-import { Box, Flex, Avatar, Text } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { Box, Flex, Avatar, Text, Spinner } from "@chakra-ui/react";
 import ChatListHeader from "./ChatListHeader";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedChat } from "../../slices/authSlice";
+import { useFetchChatsQuery } from "../../slices/chatApiSlice";
 import { getSenderUsername, getFullSender } from "../../utils/ChatLogicHelpers";
 
 const ChatList = () => {
-  const [chats, setChats] = useState([]);
-
   const { userInfo, selectedChat } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
+
+  const { data: chats, isLoading, isFetching } = useFetchChatsQuery();
 
   return (
     <Box
@@ -22,7 +23,9 @@ const ChatList = () => {
       <ChatListHeader />
 
       {/* List of Chats */}
-      {chats.length > 0 ? (
+      {isLoading || isFetching ? (
+        <Spinner size="lg" w={10} h={10} alignSelf="center" margin="auto" />
+      ) : chats?.length > 0 ? (
         <Box overflowY="scroll">
           {chats.map((chat) => {
             return (

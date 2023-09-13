@@ -7,15 +7,16 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
-import { useSendMessageMutation } from "../../slices/messageApiSlice";
+import {
+  useSendMessageMutation,
+  useFetchMessagesQuery,
+} from "../../slices/messageApiSlice";
 import { useState } from "react";
 import ScrollableChat from "./ScrollableChat";
 
 const SingleChat = () => {
-  const [messages, setMessages] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
-  const { userInfo, selectedChat } = useSelector((state) => state.auth);
+  const { selectedChat } = useSelector((state) => state.auth);
 
   const toast = useToast({
     isClosable: true,
@@ -26,6 +27,8 @@ const SingleChat = () => {
 
   const [sendMessageMutation] = useSendMessageMutation();
 
+  const { data, refetch, isLoading } = useFetchMessagesQuery(selectedChat?._id);
+
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
 
@@ -35,14 +38,12 @@ const SingleChat = () => {
   const sendMessage = async (e) => {
     if (e.key === "Enter" && newMessage) {
       try {
-        console.log("sending message");
         setNewMessage("");
         const res = await sendMessageMutation({
           chatId: selectedChat._id,
           content: newMessage,
         }).unwrap();
-        console.log(res);
-        setMessages([...messages, res]);
+        refetch();
       } catch (error) {
         console.log(error);
         toast({
@@ -55,18 +56,22 @@ const SingleChat = () => {
   };
 
   return (
-    <Flex height="100%" direction="column">
+    <>
       {selectedChat ? (
-        <>
-          {loading ? (
-            <Spinner size="xl" w={20} h={20} alignSelf="center" margin="auto" />
-          ) : (
-            <>
-              <Box padding="1em" marginBottom="3em" maxH="735px">
-                <ScrollableChat messages={messages} />
-              </Box>
-            </>
-          )}
+        <Flex direction="column" height='100%'>
+          <>
+            {isLoading ? (
+              <Spinner
+                size="xl"
+                w={20}
+                h={20}
+                alignSelf="center"
+                margin="auto"
+              />
+            ) : (
+              <ScrollableChat messages={data} />
+            )}
+          </>
           <FormControl onKeyDown={sendMessage} padding="1em" bg="gray.100">
             <Input
               bg="white"
@@ -80,11 +85,11 @@ const SingleChat = () => {
               value={newMessage}
             />
           </FormControl>
-        </>
+        </Flex>
       ) : (
         "Click on a user to start chatting"
       )}
-    </Flex>
+    </>
   );
 };
 

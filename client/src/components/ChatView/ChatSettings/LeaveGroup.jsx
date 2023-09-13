@@ -11,12 +11,17 @@ import {
 import { useSelector } from "react-redux";
 import { clearSelectedChat } from "../../../slices/authSlice";
 import { useDispatch } from "react-redux";
-import { useRemoveFromGroupMutation } from "../../../slices/chatApiSlice";
+import {
+  useRemoveFromGroupMutation,
+  useFetchChatsQuery,
+} from "../../../slices/chatApiSlice";
 
 const LeaveGroup = ({ isOpen, onClose }) => {
   const { userInfo, selectedChat } = useSelector((state) => state.auth);
 
   const [removeUser] = useRemoveFromGroupMutation();
+
+  const { refetch } = useFetchChatsQuery();
 
   const dispatch = useDispatch();
   const toast = useToast({
@@ -34,6 +39,7 @@ const LeaveGroup = ({ isOpen, onClose }) => {
       });
       dispatch(clearSelectedChat());
       onClose();
+      refetch();
     } catch (error) {
       console.error(error);
     }

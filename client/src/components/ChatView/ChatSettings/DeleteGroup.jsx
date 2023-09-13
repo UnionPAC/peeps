@@ -11,12 +11,17 @@ import {
 import { useSelector } from "react-redux";
 import { clearSelectedChat } from "../../../slices/authSlice";
 import { useDispatch } from "react-redux";
-import { useDeleteChatMutation } from "../../../slices/chatApiSlice";
+import {
+  useDeleteChatMutation,
+  useFetchChatsQuery,
+} from "../../../slices/chatApiSlice";
 
 const DeleteGroup = ({ isOpen, onClose }) => {
   const { selectedChat } = useSelector((state) => state.auth);
 
   const [deleteChat] = useDeleteChatMutation();
+
+  const { refetch } = useFetchChatsQuery();
 
   const dispatch = useDispatch();
   const toast = useToast({
@@ -31,6 +36,7 @@ const DeleteGroup = ({ isOpen, onClose }) => {
       await deleteChat({ chatId: selectedChat._id });
       dispatch(clearSelectedChat());
       onClose();
+      refetch();
     } catch (error) {
       console.error(error);
     }
