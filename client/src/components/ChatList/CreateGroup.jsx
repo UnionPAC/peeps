@@ -13,10 +13,10 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import { useSearchUsersQuery } from "../slices/userApiSlice";
-import { useCreateGroupChatMutation } from "../slices/chatApiSlice";
-import UserListItem from "./UserListItem";
-import UserTagItem from "./UserTagItem";
+import { useSearchUsersQuery } from "../../slices/userApiSlice";
+import { useCreateGroupChatMutation } from "../../slices/chatApiSlice";
+import UserListItem from "../User/UserListItem";
+import UserTagItem from "../User/UserTagItem";
 import { useSelector } from "react-redux";
 
 const CreateGroup = ({ isOpen, onClose }) => {

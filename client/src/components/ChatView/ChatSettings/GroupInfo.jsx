@@ -11,7 +11,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
-import UserListItem from "./UserListItem";
+import UserListItem from "../../User/UserListItem";
 
 const GroupInfo = ({ isOpen, onClose }) => {
   const { selectedChat } = useSelector((state) => state.auth);

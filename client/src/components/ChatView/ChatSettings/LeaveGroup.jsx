@@ -9,14 +9,14 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
-import { clearSelectedChat } from "../slices/authSlice";
+import { clearSelectedChat } from "../../../slices/authSlice";
 import { useDispatch } from "react-redux";
-import { useDeleteChatMutation } from "../slices/chatApiSlice";
+import { useRemoveFromGroupMutation } from "../../../slices/chatApiSlice";
 
-const DeleteGroup = ({ isOpen, onClose }) => {
-  const { selectedChat } = useSelector((state) => state.auth);
+const LeaveGroup = ({ isOpen, onClose }) => {
+  const { userInfo, selectedChat } = useSelector((state) => state.auth);
 
-  const [deleteChat] = useDeleteChatMutation();
+  const [removeUser] = useRemoveFromGroupMutation();
 
   const dispatch = useDispatch();
   const toast = useToast({
@@ -26,9 +26,12 @@ const DeleteGroup = ({ isOpen, onClose }) => {
     containerStyle: { fontSize: "14px" },
   });
 
-  const handleDeleteGroup = async () => {
+  const handleLeaveChat = async () => {
     try {
-      await deleteChat({ chatId: selectedChat._id });
+      const res = await removeUser({
+        chatId: selectedChat._id,
+        userId: userInfo._id,
+      });
       dispatch(clearSelectedChat());
       onClose();
     } catch (error) {
@@ -45,14 +48,14 @@ const DeleteGroup = ({ isOpen, onClose }) => {
           </AlertDialogHeader>
 
           <AlertDialogBody>
-            Are you sure you want to delete this group? This action cannot be
+            Are you sure you want to leave this group? This action cannot be
             undone.
           </AlertDialogBody>
 
           <AlertDialogFooter>
             <Button onClick={onClose}>Cancel</Button>
-            <Button colorScheme="red" ml={3} onClick={handleDeleteGroup}>
-              Delete
+            <Button colorScheme="red" ml={3} onClick={handleLeaveChat}>
+              Leave
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -61,4 +64,4 @@ const DeleteGroup = ({ isOpen, onClose }) => {
   );
 };
 
-export default DeleteGroup;
+export default LeaveGroup;

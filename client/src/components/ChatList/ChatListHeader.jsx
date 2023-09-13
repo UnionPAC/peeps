@@ -10,10 +10,10 @@ import {
 } from "@chakra-ui/react";
 import { HiUserGroup, HiDotsVertical } from "react-icons/hi";
 import { HiChatBubbleLeftEllipsis } from "react-icons/hi2";
-import { useLogoutMutation } from "../slices/userApiSlice";
+import { useLogoutMutation } from "../../slices/userApiSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { clearCredentials, clearSelectedChat } from "../slices/authSlice";
-import ProfileDrawer from "./ProfileDrawer";
+import { clearCredentials, clearSelectedChat } from "../../slices/authSlice";
+import ProfileDrawer from "../ProfileDrawer/ProfileDrawer";
 import CreateGroup from "./CreateGroup";
 import CreateChat from "./CreateChat";
 

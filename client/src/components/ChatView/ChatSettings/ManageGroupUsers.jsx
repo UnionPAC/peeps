@@ -14,15 +14,15 @@ import {
 } from "@chakra-ui/react";
 
 import { useState, useEffect } from "react";
-import { useSearchUsersQuery } from "../slices/userApiSlice";
+import { useSearchUsersQuery } from "../../../slices/userApiSlice";
 import { useSelector, useDispatch } from "react-redux";
-import { setSelectedChat } from "../slices/authSlice";
-import UserListItem from "./UserListItem";
-import UserTagItem from "./UserTagItem";
+import { setSelectedChat } from "../../../slices/authSlice";
+import UserListItem from "../../User/UserListItem";
+import UserTagItem from "../../User/UserTagItem";
 import {
   useRemoveFromGroupMutation,
   useAddToGroupMutation,
-} from "../slices/chatApiSlice";
+} from "../../../slices/chatApiSlice";
 
 const ManageGroupUsers = ({ isOpen, onClose }) => {
   const [search, setSearch] = useState("");

@@ -11,14 +11,14 @@ import {
 } from "@chakra-ui/react";
 import { HiDotsVertical } from "react-icons/hi";
 import { useSelector, useDispatch } from "react-redux";
-import { clearSelectedChat } from "../slices/authSlice";
-import ManageGroupUsers from "./ManageGroupUsers";
-import RenameGroup from "./RenameGroup";
-import GroupInfo from "./GroupInfo";
-import LeaveChat from "./LeaveGroup";
-import ContactInfo from "./ContactInfo";
-import DeleteGroup from "./DeleteGroup";
-import { getFullSender } from "../utils/ChatLogicHelpers";
+import { clearSelectedChat } from "../../slices/authSlice";
+import ManageGroupUsers from "./ChatSettings/ManageGroupUsers";
+import RenameGroup from "./ChatSettings/RenameGroup";
+import GroupInfo from "./ChatSettings/GroupInfo";
+import LeaveChat from "./ChatSettings/LeaveGroup";
+import ContactInfo from "./ChatSettings/ContactInfo";
+import DeleteGroup from "./ChatSettings/DeleteGroup";
+import { getFullSender } from "../../utils/ChatLogicHelpers";
 
 const ChatViewHeader = () => {
   const dispatch = useDispatch();

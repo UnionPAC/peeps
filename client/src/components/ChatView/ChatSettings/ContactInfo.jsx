@@ -9,7 +9,7 @@ import {
   Text,
   Image,
 } from "@chakra-ui/react";
-import { getFullSender } from "../utils/ChatLogicHelpers";
+import { getFullSender } from "../../../utils/ChatLogicHelpers";
 import { useSelector } from "react-redux";
 
 const ContactInfo = ({ isOpen, onClose }) => {

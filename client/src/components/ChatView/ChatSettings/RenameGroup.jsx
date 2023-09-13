@@ -12,8 +12,8 @@ import {
 } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import { useState } from "react";
-import { useRenameGroupChatMutation } from "../slices/chatApiSlice";
-import { setSelectedChat } from "../slices/authSlice";
+import { useRenameGroupChatMutation } from "../../../slices/chatApiSlice";
+import { setSelectedChat } from "../../../slices/authSlice";
 import { useDispatch } from "react-redux";
 
 const RenameGroup = ({ isOpen, onClose }) => {

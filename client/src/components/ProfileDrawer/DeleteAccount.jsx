@@ -8,9 +8,9 @@ import {
   Button,
   useToast,
 } from "@chakra-ui/react";
-import { useDeleteUserProfileMutation } from "../slices/userApiSlice";
+import { useDeleteUserProfileMutation } from "../../slices/userApiSlice";
 import { useDispatch } from "react-redux";
-import { clearCredentials } from "../slices/authSlice";
+import { clearCredentials } from "../../slices/authSlice";
 import { useNavigate } from "react-router-dom";
 
 const AccountDeletionDialog = ({ closeDeleteDialog, isDeleteDialogOpen }) => {

@@ -7,6 +7,8 @@ import Chat from "../models/chatModel.js";
 //@route     GET /api/messages/:chatId
 //@access    Private
 const allMessages = asyncHandler(async (req, res) => {
+  console.log("hi");
+  console.log(req.params);
   try {
     const messages = await Message.find({ chat: req.params.chatId })
       .populate("sender", "username, profilePic, email")
