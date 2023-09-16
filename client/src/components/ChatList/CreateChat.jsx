@@ -25,7 +25,7 @@ const CreateChat = ({ isOpen, onClose }) => {
   const [searchResults, setSearchResults] = useState([]);
 
   const { data } = useSearchUsersQuery(searchUser);
-  const { refetch } = useFetchChatsQuery();
+  const { data: users, refetch } = useFetchChatsQuery();
 
   const dispatch = useDispatch();
   const [accessChat] = useAccessChatMutation();
@@ -54,45 +54,43 @@ const CreateChat = ({ isOpen, onClose }) => {
   }, [searchUser]);
 
   return (
-    <>
-      <Modal
-        isOpen={isOpen}
-        onClose={() => {
-          onClose();
-          setSearchUser("");
-        }}
-        size="xl"
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>New Chat</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Input
-              placeholder="Search users by name, username or email"
-              value={searchUser}
-              onChange={(e) => setSearchUser(e.target.value)}
-            />
-            {/* Show Users (based on input) */}
-            <Box marginY="1rem">
-              {searchResults?.map((user) => (
-                <UserListItem
-                  key={user._id}
-                  user={user}
-                  handleFunction={() => handleAccessChat(user._id)}
-                  setSearch={setSearchUser}
-                />
-              ))}
-            </Box>
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="gray" mr={3} onClick={onClose}>
-              Close
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
+    <Modal
+      isOpen={isOpen}
+      onClose={() => {
+        onClose();
+        setSearchUser("");
+      }}
+      size="xl"
+    >
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>New Chat</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <Input
+            placeholder="Search users by name, username or email"
+            value={searchUser}
+            onChange={(e) => setSearchUser(e.target.value)}
+          />
+          {/* Show Users (based on input) */}
+          <Box marginY="1rem">
+            {searchResults?.map((user) => (
+              <UserListItem
+                key={user._id}
+                user={user}
+                handleFunction={() => handleAccessChat(user._id)}
+                setSearch={setSearchUser}
+              />
+            ))}
+          </Box>
+        </ModalBody>
+        <ModalFooter>
+          <Button colorScheme="gray" mr={3} onClick={onClose}>
+            Close
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 };
 

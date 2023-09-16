@@ -58,7 +58,6 @@ const RenameGroup = ({ isOpen, onClose }) => {
   };
 
   return (
-    <>
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent>
@@ -79,7 +78,6 @@ const RenameGroup = ({ isOpen, onClose }) => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </>
   );
 };
 

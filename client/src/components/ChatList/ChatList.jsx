@@ -1,25 +1,20 @@
-import { useEffect, useState } from "react";
 import { Box, Flex, Avatar, Text, Spinner } from "@chakra-ui/react";
 import ChatListHeader from "./ChatListHeader";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedChat } from "../../slices/authSlice";
 import { useFetchChatsQuery } from "../../slices/chatApiSlice";
 import { getSenderUsername, getFullSender } from "../../utils/ChatLogicHelpers";
+import { useEffect } from "react";
 
 const ChatList = () => {
   const { userInfo, selectedChat } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
 
-  const { data: chats, isLoading, isFetching } = useFetchChatsQuery();
+  const { data: chats, isLoading, isFetching, refetch } = useFetchChatsQuery();
 
   return (
-    <Box
-      width="25%"
-      display="flex"
-      flexDirection="column"
-      borderRight="1px solid lightgrey"
-    >
+    <Box width="25%" borderRight="1px solid lightgrey">
       <ChatListHeader />
 
       {/* List of Chats */}
@@ -43,13 +38,21 @@ const ChatList = () => {
               >
                 {chat.isGroupChat ? (
                   <>
-                    <Flex>
-                      <Avatar name={chat.name} size="md" mr={3} />
-                      <Box marginLeft="0.5rem">
-                        <Text fontSize="18px">{chat.name}</Text>
+                    <Avatar name={chat.name} size="md" mr={3} />
+                    <Box marginLeft="0.5rem">
+                      <Text fontSize="18px">{chat.name}</Text>
+                      {chat.lastMessage ? (
+                        <Text fontSize="sm">
+                          {chat.lastMessage.sender.username}:{" "}
+                          {chat.lastMessage.content.length > 50
+                            ? chat.latestMessage.content.substring(0, 51) +
+                              "..."
+                            : chat.lastMessage.content}
+                        </Text>
+                      ) : (
                         <Text fontSize="sm">Send first message 👋</Text>
-                      </Box>
-                    </Flex>
+                      )}
+                    </Box>
                   </>
                 ) : (
                   <>
@@ -66,7 +69,16 @@ const ChatList = () => {
                         {getSenderUsername(userInfo, chat.users)}
                       </Text>
                       {/* Last Message */}
-                      <Text fontSize="sm">Send first message 👋</Text>
+                      {chat.lastMessage ? (
+                        <Text fontSize="sm">
+                          {chat.lastMessage.content.length > 50
+                            ? chat.latestMessage.content.substring(0, 51) +
+                              "..."
+                            : chat.lastMessage.content}
+                        </Text>
+                      ) : (
+                        <Text fontSize="sm">Send first message 👋</Text>
+                      )}
                     </Box>
                   </>
                 )}
@@ -75,9 +87,9 @@ const ChatList = () => {
           })}
         </Box>
       ) : (
-        <Flex width="100%" height="100%" justify="center" mt="4rem">
+        <Flex justify="center" mt="4rem">
           <Text color="gray.600" fontStyle="italic">
-            You don't have any chats yet!
+            You don't have any chats yet
           </Text>
         </Flex>
       )}

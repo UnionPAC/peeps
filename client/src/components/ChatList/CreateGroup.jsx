@@ -98,65 +98,63 @@ const CreateGroup = ({ isOpen, onClose }) => {
   };
 
   return (
-    <>
-      <Modal
-        isOpen={isOpen}
-        onClose={() => {
-          onClose();
-          setSearch("");
-        }}
-        size="lg"
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Create Group Chat</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Input
-              onChange={(e) => setGroupName(e.target.value)}
-              placeholder="Group Name"
-              mb="1em"
-              fontSize="sm"
-            />
-            <Input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Add Users: John, Sara, Ben"
-              mb="1em"
-              fontSize="sm"
-            />
-            <Flex margin=".5em" mb="1em" flexWrap="wrap">
-              {selectedUsers?.map((user) => {
+    <Modal
+      isOpen={isOpen}
+      onClose={() => {
+        onClose();
+        setSearch("");
+      }}
+      size="lg"
+    >
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Create Group Chat</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <Input
+            onChange={(e) => setGroupName(e.target.value)}
+            placeholder="Group Name"
+            mb="1em"
+            fontSize="sm"
+          />
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Add Users: John, Sara, Ben"
+            mb="1em"
+            fontSize="sm"
+          />
+          <Flex margin=".5em" mb="1em" flexWrap="wrap">
+            {selectedUsers?.map((user) => {
+              return (
+                <UserTagItem
+                  key={user._id}
+                  user={user}
+                  handleFunction={() => handleDeleteUser(user)}
+                />
+              );
+            })}
+          </Flex>
+          <Box>
+            {searchResults
+              ?.filter((user) => user._id !== userInfo._id)
+              .map((user) => {
                 return (
-                  <UserTagItem
-                    key={user._id}
+                  <UserListItem
                     user={user}
-                    handleFunction={() => handleDeleteUser(user)}
+                    key={user._id}
+                    handleFunction={() => handleGroup(user)}
+                    setSearch={setSearch}
                   />
                 );
               })}
-            </Flex>
-            <Box>
-              {searchResults
-                ?.filter((user) => user._id !== userInfo._id)
-                .map((user) => {
-                  return (
-                    <UserListItem
-                      user={user}
-                      key={user._id}
-                      handleFunction={() => handleGroup(user)}
-                      setSearch={setSearch}
-                    />
-                  );
-                })}
-            </Box>
-          </ModalBody>
-          <ModalFooter>
-            <Button onClick={handleSubmit}>Create Group</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
+          </Box>
+        </ModalBody>
+        <ModalFooter>
+          <Button onClick={handleSubmit}>Create Group</Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 };
 

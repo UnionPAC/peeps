@@ -8,7 +8,7 @@ import {
   MenuItem,
   useDisclosure,
 } from "@chakra-ui/react";
-import { HiUserGroup, HiDotsVertical } from "react-icons/hi";
+import { HiUserGroup, HiDotsVertical, HiBell } from "react-icons/hi";
 import { HiChatBubbleLeftEllipsis } from "react-icons/hi2";
 import { useLogoutMutation } from "../../slices/userApiSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -95,6 +95,13 @@ const UserSettingsAndChat = () => {
             bg="transparent"
             fontSize="1.4rem"
             onClick={openChatModal}
+          />
+          {/* Notifications */}
+          <IconButton
+            icon={<HiBell />}
+            bg="transparent"
+            fontSize="1.4rem"
+            onClick={null}
           />
           {/* opens dropdown menu with settings */}
           <Menu>

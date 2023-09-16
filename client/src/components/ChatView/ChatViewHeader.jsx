@@ -97,6 +97,7 @@ const ChatViewHeader = () => {
               justify="space-between"
               align="center"
               bg="gray.100"
+              height='auto'
             >
               <Flex align="center">
                 <Avatar

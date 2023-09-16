@@ -4,7 +4,7 @@ import SingleChat from "./SingleChat";
 
 const ChatView = () => {
   return (
-    <Flex flexDirection="column" width="100%">
+    <Flex direction="column" height="100%" flex={1}>
       <ChatViewHeader />
       <SingleChat />
     </Flex>

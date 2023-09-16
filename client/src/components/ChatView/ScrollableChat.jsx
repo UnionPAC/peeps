@@ -1,6 +1,6 @@
-import ScrollableFeed from "react-scrollable-feed";
+import { useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Flex, Tooltip, Avatar } from "@chakra-ui/react";
+import { Box, Flex, Tooltip, Avatar } from "@chakra-ui/react";
 import {
   isSameSender,
   isLastMessage,
@@ -11,10 +11,15 @@ import {
 const ScrollableChat = ({ messages }) => {
   const { userInfo } = useSelector((state) => state.auth);
 
+  const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView();
+  }, [messages]);
+
   return (
-    <ScrollableFeed>
+    <Box overflowX="hidden" overflowY="auto">
       {messages?.map((message, index) => {
-        console.log(message.sender)
         return (
           <Flex key={message._id}>
             {(isSameSender(messages, message, index, userInfo._id) ||
@@ -57,7 +62,8 @@ const ScrollableChat = ({ messages }) => {
           </Flex>
         );
       })}
-    </ScrollableFeed>
+      <Box ref={messagesEndRef}></Box>
+    </Box>
   );
 };
 

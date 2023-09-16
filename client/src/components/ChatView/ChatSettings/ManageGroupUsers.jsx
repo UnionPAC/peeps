@@ -85,7 +85,6 @@ const ManageGroupUsers = ({ isOpen, onClose }) => {
   }, [search]);
 
   return (
-    <>
       <Modal
         isOpen={isOpen}
         onClose={() => {
@@ -142,7 +141,6 @@ const ManageGroupUsers = ({ isOpen, onClose }) => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </>
   );
 };
 
