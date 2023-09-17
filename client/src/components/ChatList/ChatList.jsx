@@ -1,4 +1,4 @@
-import { Box, Flex, Avatar, Text, Spinner } from "@chakra-ui/react";
+import { Box, Flex, Avatar, Text, AvatarBadge } from "@chakra-ui/react";
 import ChatListHeader from "./ChatListHeader";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedChat } from "../../slices/authSlice";
@@ -10,16 +10,16 @@ const ChatList = () => {
 
   const dispatch = useDispatch();
 
-  const { data: chats } = useFetchChatsQuery();
+  const { data } = useFetchChatsQuery();
 
   return (
     <Box width="25%" borderRight="1px solid lightgrey">
       <ChatListHeader />
 
       {/* List of Chats */}
-      {chats?.length > 0 ? (
+      {data?.length > 0 ? (
         <Box overflowY="scroll">
-          {chats.map((chat) => {
+          {data.map((chat) => {
             return (
               <Flex
                 padding="1rem"
@@ -40,10 +40,11 @@ const ChatList = () => {
                       <Text fontSize="18px">{chat.name}</Text>
                       {chat.lastMessage ? (
                         <Text fontSize="small">
-                          <span style={{fontWeight: "500"}}>{chat.lastMessage.sender.username}: </span>{" "}
+                          <span style={{ fontWeight: "500" }}>
+                            {chat.lastMessage.sender.username}:{" "}
+                          </span>{" "}
                           {chat.lastMessage.content.length > 40
-                            ? chat.lastMessage.content.substring(0, 41) +
-                              "..."
+                            ? chat.lastMessage.content.substring(0, 41) + "..."
                             : chat.lastMessage.content}
                         </Text>
                       ) : (
@@ -56,7 +57,7 @@ const ChatList = () => {
                     <Avatar
                       size="md"
                       mr={3}
-                      name={getFullSender(userInfo, chat.users).name}
+                      name={getFullSender(userInfo, chat.users).username || getFullSender(userInfo, chat.users).username}
                       src={getFullSender(userInfo, chat.users).profilePic}
                     ></Avatar>
                     <Box marginLeft=".5rem">
@@ -67,8 +68,7 @@ const ChatList = () => {
                       {chat.lastMessage ? (
                         <Text fontSize="small">
                           {chat.lastMessage.content.length > 40
-                            ? chat.lastMessage.content.substring(0, 41) +
-                              "..."
+                            ? chat.lastMessage.content.substring(0, 41) + "..."
                             : chat.lastMessage.content}
                         </Text>
                       ) : (

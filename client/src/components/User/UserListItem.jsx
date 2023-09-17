@@ -28,7 +28,7 @@ const UserListItem = ({ user, handleFunction, setSearch }) => {
         }
       }}
     >
-      <Avatar size="sm" mr={3} name={name} src={profilePic} />
+      <Avatar size="sm" mr={3} name={username || name} src={profilePic} />
       <Box>
         <Text>{username}</Text>
         <Text fontSize="xs">{email}</Text>

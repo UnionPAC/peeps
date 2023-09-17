@@ -27,11 +27,7 @@ export const userApiSlice = apiSlice.injectEndpoints({
     updateUserProfile: builder.mutation({
       query: (data) => {
         const { name, email, profilePic } = data;
-        console.log("Data being sent to updateUserProfile mutation:", {
-          name,
-          email,
-          profilePic,
-        });
+
         const formData = new FormData();
 
         if (name) {
@@ -46,7 +42,6 @@ export const userApiSlice = apiSlice.injectEndpoints({
           formData.append("profilePic", profilePic);
         }
 
-        // return stuff ...
         return {
           url: `${USERS_URL}/profile`,
           method: "PUT",

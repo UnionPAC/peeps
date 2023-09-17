@@ -36,31 +36,4 @@ const io = new Server(server, {
   },
 });
 
-io.on("connection", (socket) => {
-  console.log('Socket.io connected!')
-  socket.on("setup", (user) => {
-    // put user in their own room
-    socket.join(user._id);
-    socket.emit("connected");
-    console.log(`${user.username} connected to socket`)
-  });
 
-  socket.on("chat join", ({user, room}) => {
-    socket.join(room);
-    console.log(`${user.username} has joined room: ${room}`);
-  });
-
-  socket.on('new message', (newMessage) => {
-    // which chat does this message belong to?
-    const chat = newMessage.chat
-
-    if (!chat.users) return console.log('chat.users not defined')
-
-    chat.users.forEach((user) => {
-      // exclude emitting new message event to the message sender
-      if (user._id == newMessage._id) return;
-
-      socket.in(user._id).emit('message received', newMessage)
-    })
-  })
-});

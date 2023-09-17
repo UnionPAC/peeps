@@ -90,7 +90,7 @@ const ChatViewHeader = () => {
     <>
       {selectedChat ? (
         // GROUP CHAT
-        selectedChat.isGroupChat ? (
+        selectedChat?.isGroupChat ? (
           <>
             <Flex
               padding="1rem"
@@ -157,7 +157,8 @@ const ChatViewHeader = () => {
             >
               <Flex align="center">
                 <Avatar
-                  name={getFullSender(userInfo, selectedChat?.users).name}
+                  name={getFullSender(userInfo, selectedChat?.users).name || getFullSender(userInfo, selectedChat?.users).username}
+                  src={getFullSender(userInfo, selectedChat?.users).profilePic}
                   cursor="pointer"
                   size="md"
                   onClick={openContactInfo}
