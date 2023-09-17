@@ -7,6 +7,7 @@ import {
   MenuList,
   MenuItem,
   useDisclosure,
+  Tooltip,
 } from "@chakra-ui/react";
 import { HiUserGroup, HiDotsVertical, HiBell } from "react-icons/hi";
 import { HiChatBubbleLeftEllipsis } from "react-icons/hi2";
@@ -19,7 +20,7 @@ import CreateChat from "./CreateChat";
 
 const UserSettingsAndChat = () => {
   const dispatch = useDispatch();
-  const { userInfo } = useSelector((state) => state.auth);
+  const { userInfo, notifications } = useSelector((state) => state.auth);
 
   const [logout] = useLogoutMutation();
 
@@ -57,7 +58,6 @@ const UserSettingsAndChat = () => {
       dispatch(clearSelectedChat());
       navigate("/");
     } catch (error) {
-      console.error(error);
       toast({
         title: error.data.message,
         status: "error",
@@ -73,7 +73,6 @@ const UserSettingsAndChat = () => {
         padding="1rem"
         bg="gray.100"
       >
-        {/* opens sidebar replacing ChatList with user profile */}
         <Avatar
           name={userInfo.username}
           src={userInfo.profilePic}
@@ -82,28 +81,40 @@ const UserSettingsAndChat = () => {
           onClick={openProfileDrawer}
         />
         <Flex gap="5px">
-          {/* opens sidebar replacing ChatList with create group chat */}
-          <IconButton
-            icon={<HiUserGroup />}
-            bg="transparent"
-            fontSize="1.4rem"
-            onClick={openGroupModal}
-          />
-          {/* opens sidebar replacing ChatList with create / send message */}
-          <IconButton
-            icon={<HiChatBubbleLeftEllipsis />}
-            bg="transparent"
-            fontSize="1.4rem"
-            onClick={openChatModal}
-          />
-          {/* Notifications */}
-          <IconButton
-            icon={<HiBell />}
-            bg="transparent"
-            fontSize="1.4rem"
-            onClick={null}
-          />
-          {/* opens dropdown menu with settings */}
+          <Tooltip label="group chat" fontSize="small">
+            <IconButton
+              icon={<HiUserGroup />}
+              bg="transparent"
+              fontSize="1.4rem"
+              onClick={openGroupModal}
+            />
+          </Tooltip>
+
+          <Tooltip label="single chat" fontSize="small">
+            <IconButton
+              icon={<HiChatBubbleLeftEllipsis />}
+              bg="transparent"
+              fontSize="1.4rem"
+              onClick={openChatModal}
+            />
+          </Tooltip>
+
+          <Menu>
+            <Tooltip label="notifications" fontSize="small">
+              <MenuButton
+                as={IconButton}
+                aria-label="Options"
+                icon={<HiBell />}
+                bg="transparent"
+                fontSize="1.4rem"
+              />
+            </Tooltip>
+
+            <MenuList>
+              {notifications ? "Show new messages" : "No new messages"}
+            </MenuList>
+          </Menu>
+
           <Menu>
             <MenuButton
               as={IconButton}

@@ -7,9 +7,13 @@ import {
   isSameSenderMargin,
   isSameUser,
 } from "../../utils/ChatLogicHelpers";
+import { useFetchMessagesQuery } from "../../slices/messageApiSlice";
 
-const ScrollableChat = ({ messages }) => {
-  const { userInfo } = useSelector((state) => state.auth);
+const ScrollableChat = () => {
+  const { selectedChat, userInfo } = useSelector((state) => state.auth);
+
+  const { data: messages } = useFetchMessagesQuery(selectedChat._id);
+  console.log(messages)
 
   const messagesEndRef = useRef(null);
 

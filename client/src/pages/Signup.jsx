@@ -14,9 +14,9 @@ import {
 } from "@chakra-ui/react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import { useSignupMutation } from "../slices/userApiSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { setCredentials } from "../slices/authSlice";
+import { useSignupMutation } from "../slices/userApiSlice";
 
 const initialValues = {
   username: "",
@@ -49,7 +49,7 @@ const Signup = () => {
     containerStyle: { fontSize: "14px" },
   });
 
-  const [signup, { isLoading }] = useSignupMutation();
+  const [signup] = useSignupMutation();
 
   const { userInfo } = useSelector((state) => state.auth);
 
@@ -76,13 +76,11 @@ const Signup = () => {
           status: "success",
         });
       } catch (error) {
-        console.error(error);
         toast({
           title: error.data.message,
           status: "error",
         });
       }
-      // CALL REGISTER USER FROM API
       actions.setSubmitting(false);
     }, 1000);
   };
@@ -99,12 +97,10 @@ const Signup = () => {
           validationSchema={signupValidationSchema}
         >
           {(props) => {
-            // console.log(props);
             return (
               <Form>
                 <Field name="username">
                   {({ field, form }) => {
-                    // console.log({ form, field });
                     return (
                       <FormControl
                         isInvalid={

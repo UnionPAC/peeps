@@ -10,7 +10,7 @@ const initialState = {
     : null,
   notifications: localStorage.getItem("notifications")
     ? JSON.parse(localStorage.getItem("notifications"))
-    : [],
+    : null,
 };
 
 const authSlice = createSlice({
@@ -50,7 +50,7 @@ export const {
   setSelectedChat,
   clearSelectedChat,
   setNotifications,
-  clearNotifications
+  clearNotifications,
 } = authSlice.actions;
 
 export default authSlice.reducer;

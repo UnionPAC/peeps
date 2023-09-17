@@ -37,45 +37,30 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
+  console.log('Socket.io connected!')
   socket.on("setup", (user) => {
-    // Adds the socket to the given room or to the list of rooms.
+    // put user in their own room
     socket.join(user._id);
     socket.emit("connected");
-    console.log(`${user.username} is online`)
+    console.log(`${user.username} connected to socket`)
   });
 
-  socket.on("chat join", (room) => {
+  socket.on("chat join", ({user, room}) => {
     socket.join(room);
-    console.log(`User joined room: ${room}`);
+    console.log(`${user.username} has joined room: ${room}`);
   });
 
-  socket.on("typing", (room) => {
-    socket.in(room).emit("typing");
-  });
+  socket.on('new message', (newMessage) => {
+    // which chat does this message belong to?
+    const chat = newMessage.chat
 
-  socket.on("stop typing", (room) => {
-    socket.in(room).emit("stop typing");
-  });
-
-  socket.on("new message", (newMessageReceived) => {
-    // console.log(newMessageReceived);
-    const chat = newMessageReceived.chat;
-    console.log(chat);
-
-    // validation: check for users in chat
-    if (!chat.users) {
-      console.log("chat.users is not defined");
-      return;
-    }
+    if (!chat.users) return console.log('chat.users not defined')
 
     chat.users.forEach((user) => {
-      if (user._id == newMessageReceived.sender._id) return;
-      socket.in(user._id).emit("message received", newMessageReceived);
-    });
-  });
+      // exclude emitting new message event to the message sender
+      if (user._id == newMessage._id) return;
 
-  socket.off('setup', () => {
-    console.log('User Disconnected')
-    socket.leave(user._id)
+      socket.in(user._id).emit('message received', newMessage)
+    })
   })
 });

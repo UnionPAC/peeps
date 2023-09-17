@@ -4,23 +4,20 @@ import { useDispatch, useSelector } from "react-redux";
 import { setSelectedChat } from "../../slices/authSlice";
 import { useFetchChatsQuery } from "../../slices/chatApiSlice";
 import { getSenderUsername, getFullSender } from "../../utils/ChatLogicHelpers";
-import { useEffect } from "react";
 
 const ChatList = () => {
   const { userInfo, selectedChat } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
 
-  const { data: chats, isLoading, isFetching, refetch } = useFetchChatsQuery();
+  const { data: chats } = useFetchChatsQuery();
 
   return (
     <Box width="25%" borderRight="1px solid lightgrey">
       <ChatListHeader />
 
       {/* List of Chats */}
-      {isLoading || isFetching ? (
-        <Spinner size="lg" w={10} h={10} alignSelf="center" margin="auto" />
-      ) : chats?.length > 0 ? (
+      {chats?.length > 0 ? (
         <Box overflowY="scroll">
           {chats.map((chat) => {
             return (
@@ -42,15 +39,15 @@ const ChatList = () => {
                     <Box marginLeft="0.5rem">
                       <Text fontSize="18px">{chat.name}</Text>
                       {chat.lastMessage ? (
-                        <Text fontSize="sm">
-                          {chat.lastMessage.sender.username}:{" "}
-                          {chat.lastMessage.content.length > 50
-                            ? chat.latestMessage.content.substring(0, 51) +
+                        <Text fontSize="small">
+                          <span style={{fontWeight: "500"}}>{chat.lastMessage.sender.username}: </span>{" "}
+                          {chat.lastMessage.content.length > 40
+                            ? chat.lastMessage.content.substring(0, 41) +
                               "..."
                             : chat.lastMessage.content}
                         </Text>
                       ) : (
-                        <Text fontSize="sm">Send first message 👋</Text>
+                        <Text fontSize="small">Send first message 👋</Text>
                       )}
                     </Box>
                   </>
@@ -61,23 +58,21 @@ const ChatList = () => {
                       mr={3}
                       name={getFullSender(userInfo, chat.users).name}
                       src={getFullSender(userInfo, chat.users).profilePic}
-                    >
-                      {/* <AvatarBadge boxSize="1em" bg="green.500" /> */}
-                    </Avatar>
+                    ></Avatar>
                     <Box marginLeft=".5rem">
                       <Text fontSize="18px">
                         {getSenderUsername(userInfo, chat.users)}
                       </Text>
-                      {/* Last Message */}
+
                       {chat.lastMessage ? (
-                        <Text fontSize="sm">
-                          {chat.lastMessage.content.length > 50
-                            ? chat.latestMessage.content.substring(0, 51) +
+                        <Text fontSize="small">
+                          {chat.lastMessage.content.length > 40
+                            ? chat.lastMessage.content.substring(0, 41) +
                               "..."
                             : chat.lastMessage.content}
                         </Text>
                       ) : (
-                        <Text fontSize="sm">Send first message 👋</Text>
+                        <Text fontSize="small">Send first message 👋</Text>
                       )}
                     </Box>
                   </>

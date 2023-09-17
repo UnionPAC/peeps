@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 import {
   Box,
@@ -13,11 +14,10 @@ import {
 } from "@chakra-ui/react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
+import { setCredentials } from "../slices/authSlice";
 import { useLoginMutation } from "../slices/userApiSlice";
 import { useFetchChatsQuery } from "../slices/chatApiSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { setCredentials } from "../slices/authSlice";
 
 const initialValues = {
   username: "",
@@ -46,7 +46,7 @@ const Login = () => {
 
   const { refetch } = useFetchChatsQuery();
 
-  const [login, { isLoading }] = useLoginMutation();
+  const [login] = useLoginMutation();
 
   const { userInfo } = useSelector((state) => state.auth);
 
@@ -64,19 +64,16 @@ const Login = () => {
           username: values.username,
           password: values.password,
         }).unwrap();
-        console.log(res);
         // dispatch set credentials
         dispatch(setCredentials({ ...res }));
         navigate("/");
         refetch();
       } catch (error) {
-        console.error(error);
         toast({
           title: error.data.message,
           status: "error",
         });
       }
-      // CALL REGISTER USER FROM API
       actions.setSubmitting(false);
     }, 1000);
   };
@@ -93,12 +90,10 @@ const Login = () => {
           validationSchema={loginValidationSchema}
         >
           {(props) => {
-            // console.log(props);
             return (
               <Form>
                 <Field name="username">
                   {({ field, form }) => {
-                    // console.log({ form, field });
                     return (
                       <FormControl
                         isInvalid={
