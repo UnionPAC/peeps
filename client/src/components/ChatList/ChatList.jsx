@@ -1,25 +1,27 @@
-import { Box, Flex, Avatar, Text, AvatarBadge } from "@chakra-ui/react";
+import { Box, Flex, Avatar, Text,  } from "@chakra-ui/react";
 import ChatListHeader from "./ChatListHeader";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedChat } from "../../slices/authSlice";
 import { useFetchChatsQuery } from "../../slices/chatApiSlice";
 import { getSenderUsername, getFullSender } from "../../utils/ChatLogicHelpers";
+import { useFetchNotificationsQuery } from "../../slices/notificationApiSlice";
 
 const ChatList = () => {
   const { userInfo, selectedChat } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
 
-  const { data } = useFetchChatsQuery();
+  const { data: chats } = useFetchChatsQuery();
+  const { data: notifications } = useFetchNotificationsQuery();
 
   return (
     <Box width="25%" borderRight="1px solid lightgrey">
       <ChatListHeader />
 
       {/* List of Chats */}
-      {data?.length > 0 ? (
+      {chats?.length > 0 ? (
         <Box overflowY="scroll">
-          {data.map((chat) => {
+          {chats.map((chat) => {
             return (
               <Flex
                 padding="1rem"
@@ -57,7 +59,10 @@ const ChatList = () => {
                     <Avatar
                       size="md"
                       mr={3}
-                      name={getFullSender(userInfo, chat.users).username || getFullSender(userInfo, chat.users).username}
+                      name={
+                        getFullSender(userInfo, chat.users).username ||
+                        getFullSender(userInfo, chat.users).username
+                      }
                       src={getFullSender(userInfo, chat.users).profilePic}
                     ></Avatar>
                     <Box marginLeft=".5rem">
