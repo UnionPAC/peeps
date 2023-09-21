@@ -11,19 +11,13 @@ const notificationSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
-    recipients: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
+    recipient: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
     chat: {
       type: Schema.Types.ObjectId,
       ref: "Chat",
-    },
-    read: {
-      type: Boolean,
-      default: false,
     },
   },
   { timestamps: true }

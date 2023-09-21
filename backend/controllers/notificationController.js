@@ -61,32 +61,6 @@ const fetchNotifications = asyncHandler(async (req, res) => {
   }
 });
 
-//@desc      Mark a notification as read
-//@route     PUT /api/notifications/:id/mark-as-read
-//@access    Private
-const markNotificationAsRead = asyncHandler(async (req, res) => {
-  const { notificationId } = req.params;
-
-  if (!notificationId) {
-    res.status(400);
-    throw new Error(
-      "Could not find the notification ID you are wanting to access"
-    );
-  }
-
-  try {
-    const readNotification = await Notification.findByIdAndUpdate(
-      notificationId,
-      { read: true },
-      { new: true }
-    );
-
-    res.status(200).json(readNotification);
-  } catch (error) {
-    res.status(400);
-    throw new Error(error.message);
-  }
-});
 
 //@desc      Delete a notification
 //@route     DELETE /api/notifications/:id
@@ -120,6 +94,5 @@ const deleteNotification = asyncHandler(async (req, res) => {
 export {
   createNotification,
   fetchNotifications,
-  markNotificationAsRead,
   deleteNotification,
 };
