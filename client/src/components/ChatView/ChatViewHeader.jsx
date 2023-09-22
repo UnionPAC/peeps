@@ -21,6 +21,7 @@ import DeleteGroup from "./ChatSettings/DeleteGroup";
 import { getFullSender } from "../../utils/ChatLogicHelpers";
 
 const ChatViewHeader = () => {
+  /* REDUX STUFF */
   const dispatch = useDispatch();
   const { userInfo, selectedChat } = useSelector((state) => state.auth);
 
@@ -31,6 +32,8 @@ const ChatViewHeader = () => {
       console.error(error);
     }
   };
+
+  /* DISCLOSURE TOGGLES */
 
   {
     /* Manage Users  */
@@ -97,7 +100,7 @@ const ChatViewHeader = () => {
               justify="space-between"
               align="center"
               bg="gray.100"
-              height='auto'
+              height="auto"
             >
               <Flex align="center">
                 <Avatar
@@ -131,16 +134,21 @@ const ChatViewHeader = () => {
                 </MenuList>
               </Menu>
             </Flex>
+
             <GroupInfo onClose={closeGroupInfo} isOpen={isGroupInfoOpen} />
+
             <RenameGroup
               onClose={closeRenameGroup}
               isOpen={isRenameGroupOpen}
             />
+
             <ManageGroupUsers
               onClose={closeManageUsers}
               isOpen={isManageUsersOpen}
             />
+
             <LeaveChat onClose={closeLeaveChat} isOpen={isLeaveChatOpen} />
+
             <DeleteGroup
               onClose={closeDeleteGroup}
               isOpen={isDeleteGroupOpen}
@@ -157,7 +165,10 @@ const ChatViewHeader = () => {
             >
               <Flex align="center">
                 <Avatar
-                  name={getFullSender(userInfo, selectedChat?.users).name || getFullSender(userInfo, selectedChat?.users).username}
+                  name={
+                    getFullSender(userInfo, selectedChat?.users).name ||
+                    getFullSender(userInfo, selectedChat?.users).username
+                  }
                   src={getFullSender(userInfo, selectedChat?.users).profilePic}
                   cursor="pointer"
                   size="md"
@@ -181,10 +192,12 @@ const ChatViewHeader = () => {
                 </MenuList>
               </Menu>
             </Flex>
-            <ContactInfo
-              onClose={closeContactInfo}
-              isOpen={isContactInfoOpen}
-            />
+            {isContactInfoOpen && (
+              <ContactInfo
+                onClose={closeContactInfo}
+                isOpen={isContactInfoOpen}
+              />
+            )}
           </>
         )
       ) : (

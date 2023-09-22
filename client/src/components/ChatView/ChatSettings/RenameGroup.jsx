@@ -11,7 +11,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   useRenameGroupChatMutation,
   useFetchChatsQuery,
@@ -20,21 +20,25 @@ import { setSelectedChat } from "../../../slices/authSlice";
 import { useDispatch } from "react-redux";
 
 const RenameGroup = ({ isOpen, onClose }) => {
+  /* STATE */
   const [groupName, setGroupName] = useState("");
 
+  /* REDUX STUFF */
   const dispatch = useDispatch();
+  const { selectedChat, userInfo } = useSelector((state) => state.auth);
+
+  /* QUERIES */
+  const { refetch: refetchChats } = useFetchChatsQuery();
+
+  /* MUTATIONS */
+  const [renameGroupChat] = useRenameGroupChatMutation();
+
   const toast = useToast({
     isClosable: true,
     variant: "left-accent",
     position: "top-right",
     containerStyle: { fontSize: "14px" },
   });
-
-  const { selectedChat } = useSelector((state) => state.auth);
-
-  const { refetch } = useFetchChatsQuery();
-
-  const [renameGroupChat] = useRenameGroupChatMutation();
 
   const handleClick = async () => {
     if (groupName === selectedChat.name) {
@@ -48,7 +52,7 @@ const RenameGroup = ({ isOpen, onClose }) => {
       }).unwrap();
       dispatch(setSelectedChat(res));
       onClose();
-      refetch();
+      refetchChats();
     } catch (error) {
       toast({
         title: error.data.message,
@@ -58,26 +62,26 @@ const RenameGroup = ({ isOpen, onClose }) => {
   };
 
   return (
-      <Modal isOpen={isOpen} onClose={onClose} size="xl">
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Rename Group</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Input
-              type="text"
-              name="groupName"
-              defaultValue={selectedChat?.name}
-              onChange={(e) => setGroupName(e.target.value)}
-            />
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="gray" mr={3} onClick={handleClick}>
-              Save
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+    <Modal isOpen={isOpen} onClose={onClose} size="xl">
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Rename Group</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <Input
+            type="text"
+            name="groupName"
+            defaultValue={selectedChat?.name}
+            onChange={(e) => setGroupName(e.target.value)}
+          />
+        </ModalBody>
+        <ModalFooter>
+          <Button colorScheme="gray" mr={3} onClick={handleClick}>
+            Save
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 };
 

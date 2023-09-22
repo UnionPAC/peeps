@@ -13,6 +13,7 @@ import { getFullSender } from "../../../utils/ChatLogicHelpers";
 import { useSelector } from "react-redux";
 
 const ContactInfo = ({ isOpen, onClose }) => {
+  /* REDUX STUFF */
   const { userInfo, selectedChat } = useSelector((state) => state.auth);
 
   return (

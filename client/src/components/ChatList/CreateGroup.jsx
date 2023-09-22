@@ -23,16 +23,20 @@ import UserTagItem from "../User/UserTagItem";
 import { useSelector } from "react-redux";
 
 const CreateGroup = ({ isOpen, onClose }) => {
+  /* STATE */
   const [groupName, setGroupName] = useState("");
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
 
+  /* REDUX STUFF */
   const { userInfo } = useSelector((state) => state.auth);
 
+  /* QUERIES */
   const { data } = useSearchUsersQuery(search);
-  const { refetch } = useFetchChatsQuery();
+  const { refetch: refetchChats } = useFetchChatsQuery();
 
+  /* MUTATIONS */
   const [createGroup] = useCreateGroupChatMutation();
 
   const toast = useToast({
@@ -50,15 +54,7 @@ const CreateGroup = ({ isOpen, onClose }) => {
     }
   }, [search]);
 
-  const handleGroup = (user) => {
-    // add user to selected user's
-    if (selectedUsers.includes(user)) {
-      toast({ title: "User already added to group", status: "error" });
-    }
-    setSelectedUsers([...selectedUsers, user]);
-  };
-
-  const handleSubmit = async () => {
+  const handleCreateGroup = async () => {
     if (!groupName) {
       toast({
         title: "Please enter a group name",
@@ -88,14 +84,26 @@ const CreateGroup = ({ isOpen, onClose }) => {
     setGroupName("");
     setSelectedUsers([]);
     onClose();
-    refetch();
+    refetchChats();
   };
 
-  const handleDeleteUser = async (userToDelete) => {
+  const addUserToSelectedUsers = (userToAdd) => {
+    if (selectedUsers.some((user) => user._id == userToAdd._id)) {
+      toast({
+        title: "User already added",
+        status: "warning",
+      });
+      return;
+    }
+    setSelectedUsers([...selectedUsers, userToAdd]);
+  };
+
+  const removeSelectedUser = (userToDelete) => {
     setSelectedUsers(
       selectedUsers.filter((sel) => sel._id !== userToDelete._id)
     );
   };
+
 
   return (
     <Modal
@@ -125,12 +133,12 @@ const CreateGroup = ({ isOpen, onClose }) => {
             fontSize="sm"
           />
           <Flex margin=".5em" mb="1em" flexWrap="wrap">
-            {selectedUsers?.map((user) => {
+            {selectedUsers?.map((user, index) => {
               return (
                 <UserTagItem
-                  key={user._id}
+                  key={`${user._id}-${index}`}
                   user={user}
-                  handleFunction={() => handleDeleteUser(user)}
+                  handleFunction={() => removeSelectedUser(user)}
                 />
               );
             })}
@@ -138,12 +146,12 @@ const CreateGroup = ({ isOpen, onClose }) => {
           <Box>
             {searchResults
               ?.filter((user) => user._id !== userInfo._id)
-              .map((user) => {
+              .map((user, index) => {
                 return (
                   <UserListItem
+                    key={`${user._id}-${index}`}
                     user={user}
-                    key={user._id}
-                    handleFunction={() => handleGroup(user)}
+                    handleFunction={() => addUserToSelectedUsers(user)}
                     setSearch={setSearch}
                   />
                 );
@@ -151,7 +159,7 @@ const CreateGroup = ({ isOpen, onClose }) => {
           </Box>
         </ModalBody>
         <ModalFooter>
-          <Button onClick={handleSubmit}>Create Group</Button>
+          <Button onClick={handleCreateGroup}>Create Group</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>

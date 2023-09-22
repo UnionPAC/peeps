@@ -17,13 +17,16 @@ import {
 } from "../../../slices/chatApiSlice";
 
 const DeleteGroup = ({ isOpen, onClose }) => {
-  const { selectedChat } = useSelector((state) => state.auth);
+  /* REDUX STUFF */
+  const { selectedChat, userInfo } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
+  /* QUERIES */
+  const { refetch: refetchChats } = useFetchChatsQuery();
+
+  /* MUTATIONS */
   const [deleteChat] = useDeleteChatMutation();
 
-  const { refetch } = useFetchChatsQuery();
-
-  const dispatch = useDispatch();
   const toast = useToast({
     isClosable: true,
     variant: "left-accent",
@@ -33,14 +36,18 @@ const DeleteGroup = ({ isOpen, onClose }) => {
 
   const handleDeleteGroup = async () => {
     try {
-      await deleteChat({ chatId: selectedChat._id });
+      const res = await deleteChat({ chatId: selectedChat._id }).unwrap();
       dispatch(clearSelectedChat());
       onClose();
-      refetch();
+      refetchChats();
     } catch (error) {
-      console.error(error);
+      toast({
+        title: error.data.message,
+        status: "error",
+      });
     }
   };
+
 
   return (
     <AlertDialog isOpen={isOpen} onClose={onClose}>

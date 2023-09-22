@@ -17,13 +17,16 @@ import {
 } from "../../../slices/chatApiSlice";
 
 const LeaveGroup = ({ isOpen, onClose }) => {
+  /* REDUX STUFF */
+  const dispatch = useDispatch();
   const { userInfo, selectedChat } = useSelector((state) => state.auth);
 
-  const [removeUser] = useRemoveFromGroupMutation();
-
+  /* QUERIES */
   const { refetch } = useFetchChatsQuery();
 
-  const dispatch = useDispatch();
+  /* MUTATIONS */
+  const [removeUser] = useRemoveFromGroupMutation();
+
   const toast = useToast({
     isClosable: true,
     variant: "left-accent",
@@ -41,7 +44,10 @@ const LeaveGroup = ({ isOpen, onClose }) => {
       onClose();
       refetch();
     } catch (error) {
-      console.error(error);
+      toast({
+        title: error.data.message,
+        status: "error",
+      });
     }
   };
 

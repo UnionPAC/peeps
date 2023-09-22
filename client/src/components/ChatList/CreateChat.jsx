@@ -10,37 +10,52 @@ import {
   Input,
   ModalFooter,
   Box,
+  useToast,
 } from "@chakra-ui/react";
 import { useSearchUsersQuery } from "../../slices/userApiSlice";
 import UserListItem from "../User/UserListItem";
 import { setSelectedChat } from "../../slices/authSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   useAccessChatMutation,
   useFetchChatsQuery,
 } from "../../slices/chatApiSlice";
 
 const CreateChat = ({ isOpen, onClose }) => {
+  /* STATE */
   const [searchUser, setSearchUser] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
-  const { data } = useSearchUsersQuery(searchUser);
-  const { data: users, refetch } = useFetchChatsQuery();
-
+  /* REDUX STUFF */
+  const { userInfo } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+
+  /* QUERIES */
+  const { data } = useSearchUsersQuery(searchUser);
+  const { refetch: refetchChats } = useFetchChatsQuery();
+
+  /* MUTATIONS */
   const [accessChat] = useAccessChatMutation();
+
+  const toast = useToast({
+    isClosable: true,
+    variant: "left-accent",
+    position: "top-right",
+    containerStyle: { fontSize: "14px" },
+  });
 
   const handleAccessChat = async (_id) => {
     try {
       const res = await accessChat(_id).unwrap();
-
       dispatch(setSelectedChat(res));
-
       onClose();
       setSearchUser("");
-      refetch();
+      refetchChats();
     } catch (error) {
-      console.error(error);
+      toast({
+        title: error.data.message,
+        status: "error",
+      });
     }
   };
 
@@ -49,7 +64,6 @@ const CreateChat = ({ isOpen, onClose }) => {
       setSearchResults([]);
     } else {
       setSearchResults(data);
-      // console.log(searchResults);
     }
   }, [searchUser]);
 

@@ -26,24 +26,28 @@ import {
 } from "../../../slices/chatApiSlice";
 
 const ManageGroupUsers = ({ isOpen, onClose }) => {
+  /* STATE */
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
+  /* REDUX STUFF */
   const dispatch = useDispatch();
+  const { selectedChat } = useSelector((state) => state.auth);
+
+  /* QUERIES */
+  const { data } = useSearchUsersQuery(search);
+  const { refetch: refetchChats } = useFetchChatsQuery();
+
+  /* MUTATIONS */
+  const [addUser] = useAddToGroupMutation();
+  const [removeUser] = useRemoveFromGroupMutation();
+
   const toast = useToast({
     isClosable: true,
     variant: "left-accent",
     position: "top-right",
     containerStyle: { fontSize: "14px" },
   });
-
-  const { selectedChat } = useSelector((state) => state.auth);
-
-  const { data } = useSearchUsersQuery(search);
-  const { refetch } = useFetchChatsQuery();
-
-  const [addUser] = useAddToGroupMutation();
-  const [removeUser] = useRemoveFromGroupMutation();
 
   const addUserToGroup = async (userId) => {
     if (selectedChat.users.find((user) => user._id === userId)) {
@@ -59,8 +63,13 @@ const ManageGroupUsers = ({ isOpen, onClose }) => {
         userId: userId,
       }).unwrap();
       dispatch(setSelectedChat(res));
-      refetch();
-    } catch (error) {}
+      refetchChats();
+    } catch (error) {
+      toast({
+        title: error.data.message,
+        status: "error",
+      });
+    }
   };
 
   const removeUserFromGroup = async (userId) => {
@@ -70,9 +79,12 @@ const ManageGroupUsers = ({ isOpen, onClose }) => {
         userId: userId,
       }).unwrap();
       dispatch(setSelectedChat(res));
-      refetch();
+      refetchChats();
     } catch (error) {
-      console.error(error);
+      toast({
+        title: error.data.message,
+        status: "error",
+      });
     }
   };
 
@@ -84,63 +96,64 @@ const ManageGroupUsers = ({ isOpen, onClose }) => {
     }
   }, [search]);
 
+
   return (
-      <Modal
-        isOpen={isOpen}
-        onClose={() => {
-          onClose();
-          setSearch("");
-        }}
-        size="xl"
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Manage Users</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Input
-              type="text"
-              name="search"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Add Users: John, Sara, Ben"
-              mb="1em"
-              fontSize="sm"
-            ></Input>
-            <Box>
-              {searchResults.map((user) => {
+    <Modal
+      isOpen={isOpen}
+      onClose={() => {
+        onClose();
+        setSearch("");
+      }}
+      size="xl"
+    >
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Manage Users</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <Input
+            type="text"
+            name="search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Add Users: John, Sara, Ben"
+            mb="1em"
+            fontSize="sm"
+          ></Input>
+          <Box>
+            {searchResults.map((user) => {
+              return (
+                <UserListItem
+                  user={user}
+                  key={user._id}
+                  handleFunction={() => addUserToGroup(user._id)}
+                  setSearch={setSearch}
+                />
+              );
+            })}
+          </Box>
+          <Flex marginY="1rem">
+            {selectedChat?.users
+              .filter((user) => user._id !== selectedChat.groupAdmin._id)
+              .map((user) => {
                 return (
-                  <UserListItem
-                    user={user}
+                  <UserTagItem
                     key={user._id}
-                    handleFunction={() => addUserToGroup(user._id)}
-                    setSearch={setSearch}
+                    user={user}
+                    handleFunction={() => removeUserFromGroup(user._id)}
                   />
                 );
               })}
-            </Box>
-            <Flex marginY="1rem">
-              {selectedChat?.users
-                .filter((user) => user._id !== selectedChat.groupAdmin._id)
-                .map((user) => {
-                  return (
-                    <UserTagItem
-                      key={user._id}
-                      user={user}
-                      handleFunction={() => removeUserFromGroup(user._id)}
-                    />
-                  );
-                })}
-            </Flex>
-            <Box></Box>
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="gray" mr={3} onClick={onClose}>
-              Close
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+          </Flex>
+          <Box></Box>
+        </ModalBody>
+        <ModalFooter>
+          <Button colorScheme="gray" mr={3} onClick={onClose}>
+            Close
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 };
 
