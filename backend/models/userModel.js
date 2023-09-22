@@ -25,6 +25,10 @@ const userSchema = new Schema(
     profilePic: {
       type: String,
     },
+    isOnline: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

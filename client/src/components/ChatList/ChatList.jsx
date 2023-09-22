@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Box, Flex, Avatar, Text } from "@chakra-ui/react";
+import { Box, Flex, Avatar, AvatarBadge, Text } from "@chakra-ui/react";
 import ChatListHeader from "./ChatListHeader";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedChat } from "../../slices/authSlice";
@@ -7,9 +6,6 @@ import { useFetchChatsQuery } from "../../slices/chatApiSlice";
 import { getSenderUsername, getFullSender } from "../../utils/ChatLogicHelpers";
 
 const ChatList = () => {
-  /* STATE */
-  const [isOnline, setIsOnline] = useState(false);
-
   /* REDUX STUFF */
   const { userInfo, selectedChat } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -68,8 +64,10 @@ const ChatList = () => {
                       }
                       src={getFullSender(userInfo, chat.users).profilePic}
                     >
-                      {isOnline && (
+                      {getFullSender(userInfo, chat.users).isOnline ? (
                         <AvatarBadge boxSize="1.25em" bg="green.500" />
+                      ) : (
+                        ""
                       )}
                     </Avatar>
                     <Box marginLeft=".5rem">
