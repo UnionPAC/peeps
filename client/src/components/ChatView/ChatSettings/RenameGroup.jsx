@@ -18,6 +18,7 @@ import {
 } from "../../../slices/chatApiSlice";
 import { setSelectedChat } from "../../../slices/authSlice";
 import { useDispatch } from "react-redux";
+import socket from "../../../socket";
 
 const RenameGroup = ({ isOpen, onClose }) => {
   /* STATE */
@@ -50,6 +51,7 @@ const RenameGroup = ({ isOpen, onClose }) => {
         chatId: selectedChat._id,
         chatName: groupName,
       }).unwrap();
+      socket.emit("rename group", { chat: res, renamerId: userInfo._id });
       dispatch(setSelectedChat(res));
       onClose();
       refetchChats();
@@ -61,27 +63,40 @@ const RenameGroup = ({ isOpen, onClose }) => {
     }
   };
 
+  useEffect(() => {
+    socket.on("group renamed", (chat) => {
+      refetchChats();
+      if (selectedChat?._id == chat._id) {
+        dispatch(setSelectedChat(chat));
+      }
+    });
+  }, []);
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="xl">
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Rename Group</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <Input
-            type="text"
-            name="groupName"
-            defaultValue={selectedChat?.name}
-            onChange={(e) => setGroupName(e.target.value)}
-          />
-        </ModalBody>
-        <ModalFooter>
-          <Button colorScheme="gray" mr={3} onClick={handleClick}>
-            Save
-          </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+    <>
+      {selectedChat && selectedChat.isGroupChat && (
+        <Modal isOpen={isOpen} onClose={onClose} size="xl">
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Rename Group</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <Input
+                type="text"
+                name="groupName"
+                defaultValue={selectedChat?.name}
+                onChange={(e) => setGroupName(e.target.value)}
+              />
+            </ModalBody>
+            <ModalFooter>
+              <Button colorScheme="gray" mr={3} onClick={handleClick}>
+                Save
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      )}
+    </>
   );
 };
 

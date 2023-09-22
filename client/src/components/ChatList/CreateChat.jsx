@@ -20,6 +20,7 @@ import {
   useAccessChatMutation,
   useFetchChatsQuery,
 } from "../../slices/chatApiSlice";
+import socket from "../../socket";
 
 const CreateChat = ({ isOpen, onClose }) => {
   /* STATE */
@@ -47,6 +48,7 @@ const CreateChat = ({ isOpen, onClose }) => {
   const handleAccessChat = async (_id) => {
     try {
       const res = await accessChat(_id).unwrap();
+      socket.emit("new chat", { chat: res, chatCreatorId: userInfo._id });
       dispatch(setSelectedChat(res));
       onClose();
       setSearchUser("");
@@ -66,6 +68,12 @@ const CreateChat = ({ isOpen, onClose }) => {
       setSearchResults(data);
     }
   }, [searchUser]);
+
+  useEffect(() => {
+    socket.on("chat created", () => {
+      refetchChats();
+    });
+  }, []);
 
   return (
     <Modal

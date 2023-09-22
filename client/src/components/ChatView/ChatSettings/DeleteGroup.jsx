@@ -15,6 +15,8 @@ import {
   useDeleteChatMutation,
   useFetchChatsQuery,
 } from "../../../slices/chatApiSlice";
+import socket from "../../../socket";
+import { useEffect } from "react";
 
 const DeleteGroup = ({ isOpen, onClose }) => {
   /* REDUX STUFF */
@@ -37,9 +39,13 @@ const DeleteGroup = ({ isOpen, onClose }) => {
   const handleDeleteGroup = async () => {
     try {
       const res = await deleteChat({ chatId: selectedChat._id }).unwrap();
-      dispatch(clearSelectedChat());
+      socket.emit("delete group", {
+        chat: res,
+        deleterId: userInfo._id,
+      });
       onClose();
       refetchChats();
+      dispatch(clearSelectedChat());
     } catch (error) {
       toast({
         title: error.data.message,
@@ -48,29 +54,39 @@ const DeleteGroup = ({ isOpen, onClose }) => {
     }
   };
 
+  useEffect(() => {
+    socket.on("group deleted", (chat) => {
+      refetchChats();
+      dispatch(clearSelectedChat());
+    });
+  }, []);
 
   return (
-    <AlertDialog isOpen={isOpen} onClose={onClose}>
-      <AlertDialogOverlay>
-        <AlertDialogContent>
-          <AlertDialogHeader fontSize="lg" fontWeight="bold">
-            Delete Group
-          </AlertDialogHeader>
+    <>
+      {selectedChat && selectedChat.isGroupChat && (
+        <AlertDialog isOpen={isOpen} onClose={onClose}>
+          <AlertDialogOverlay>
+            <AlertDialogContent>
+              <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                Delete Group
+              </AlertDialogHeader>
 
-          <AlertDialogBody>
-            Are you sure you want to delete this group? This action cannot be
-            undone.
-          </AlertDialogBody>
+              <AlertDialogBody>
+                Are you sure you want to delete this group? This action cannot
+                be undone.
+              </AlertDialogBody>
 
-          <AlertDialogFooter>
-            <Button onClick={onClose}>Cancel</Button>
-            <Button colorScheme="red" ml={3} onClick={handleDeleteGroup}>
-              Delete
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialogOverlay>
-    </AlertDialog>
+              <AlertDialogFooter>
+                <Button onClick={onClose}>Cancel</Button>
+                <Button colorScheme="red" ml={3} onClick={handleDeleteGroup}>
+                  Delete
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialogOverlay>
+        </AlertDialog>
+      )}
+    </>
   );
 };
 

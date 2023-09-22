@@ -21,6 +21,7 @@ import {
 import UserListItem from "../User/UserListItem";
 import UserTagItem from "../User/UserTagItem";
 import { useSelector } from "react-redux";
+import socket from "../../socket";
 
 const CreateGroup = ({ isOpen, onClose }) => {
   /* STATE */
@@ -76,6 +77,7 @@ const CreateGroup = ({ isOpen, onClose }) => {
         name: groupName,
         users: JSON.stringify(selectedUsers),
       }).unwrap();
+      socket.emit("new chat", { chat: res, chatCreatorId: userInfo._id });
     } catch (error) {
       console.error(error);
     }
@@ -104,6 +106,11 @@ const CreateGroup = ({ isOpen, onClose }) => {
     );
   };
 
+  useEffect(() => {
+    socket.on("chat created", () => {
+      refetchChats();
+    });
+  }, []);
 
   return (
     <Modal

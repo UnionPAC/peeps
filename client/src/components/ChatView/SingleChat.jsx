@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, FormControl, Input } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import {
@@ -9,12 +9,14 @@ import { useFetchChatsQuery } from "../../slices/chatApiSlice";
 import ScrollableChat from "./ScrollableChat";
 import Lottie from "lottie-react";
 import typingIndicator from "../../assets/typing-indicator.json";
+import socket from "../../socket";
 
 let selectedChatCompare;
 
 const SingleChat = () => {
   /* STATE */
   const [newMessage, setNewMessage] = useState("");
+  const [socketConnected, setSocketConnected] = useState(false);
   const [typing, setTyping] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
 
@@ -36,6 +38,7 @@ const SingleChat = () => {
         chatId: selectedChat._id,
         content: newMessage,
       }).unwrap();
+      socket.emit("new message", res);
       refetchMessages();
       refetchChats();
       setNewMessage("");
@@ -44,7 +47,53 @@ const SingleChat = () => {
 
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
+
+    if (!socketConnected) {
+      console.log("socket not connected!");
+    }
+
+    if (!typing) {
+      setTyping(true);
+      socket.emit("typing", selectedChat._id);
+    }
+    let lastTypingTime = new Date().getTime();
+    var timerLength = 3000;
+    setTimeout(() => {
+      var timeNow = new Date().getTime();
+      var timeDiff = timeNow - lastTypingTime;
+      if (timeDiff >= timerLength && typing) {
+        socket.emit("stop typing", selectedChat._id);
+        setTyping(false);
+      }
+    }, timerLength);
   };
+
+  useEffect(() => {
+    socket.on("connected", () => setSocketConnected(true));
+    socket.on("typing", () => setIsTyping(true));
+    socket.on("stop typing", () => setIsTyping(false));
+    socket.on("message received", (newMessageReceived) => {
+      if (
+        !selectedChatCompare || // if chat is not selected or doesn't match current chat
+        selectedChatCompare._id !== newMessageReceived.chat._id
+      ) {
+        // @TODO -if the new message received is NOT already in notifications, then add to notifications
+        refetchChats();
+        refetchMessages();
+      } else {
+        refetchChats();
+        refetchMessages();
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    socket.emit("join chat", {
+      username: userInfo.username,
+      room: selectedChat?._id,
+    });
+    selectedChatCompare = selectedChat;
+  }, [selectedChat]);
 
   return (
     <>

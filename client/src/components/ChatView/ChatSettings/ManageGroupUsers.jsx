@@ -16,7 +16,7 @@ import {
 import { useState, useEffect } from "react";
 import { useSearchUsersQuery } from "../../../slices/userApiSlice";
 import { useSelector, useDispatch } from "react-redux";
-import { setSelectedChat } from "../../../slices/authSlice";
+import { clearSelectedChat, setSelectedChat } from "../../../slices/authSlice";
 import UserListItem from "../../User/UserListItem";
 import UserTagItem from "../../User/UserTagItem";
 import {
@@ -24,6 +24,7 @@ import {
   useAddToGroupMutation,
   useFetchChatsQuery,
 } from "../../../slices/chatApiSlice";
+import socket from "../../../socket";
 
 const ManageGroupUsers = ({ isOpen, onClose }) => {
   /* STATE */
@@ -62,6 +63,7 @@ const ManageGroupUsers = ({ isOpen, onClose }) => {
         chatId: selectedChat._id,
         userId: userId,
       }).unwrap();
+      socket.emit("add user", { chat: res, addedUserId: userId });
       dispatch(setSelectedChat(res));
       refetchChats();
     } catch (error) {
@@ -78,6 +80,7 @@ const ManageGroupUsers = ({ isOpen, onClose }) => {
         chatId: selectedChat._id,
         userId: userId,
       }).unwrap();
+      socket.emit("remove user", { chat: res, removedUserId: userId });
       dispatch(setSelectedChat(res));
       refetchChats();
     } catch (error) {
@@ -96,64 +99,84 @@ const ManageGroupUsers = ({ isOpen, onClose }) => {
     }
   }, [search]);
 
+  useEffect(() => {
+    socket.on("user added", (chat) => {
+      refetchChats();
+    });
+    socket.on("user removed", (chat) => {
+      refetchChats();
+      if (selectedChat?._id == chat._id) {
+        dispatch(clearSelectedChat());
+      }
+    });
+    socket.on("left group", (chat) => {
+      if (selectedChat?._id == chat._id) {
+        dispatch(setSelectedChat(chat));
+      }
+    });
+  }, []);
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={() => {
-        onClose();
-        setSearch("");
-      }}
-      size="xl"
-    >
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Manage Users</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <Input
-            type="text"
-            name="search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Add Users: John, Sara, Ben"
-            mb="1em"
-            fontSize="sm"
-          ></Input>
-          <Box>
-            {searchResults.map((user) => {
-              return (
-                <UserListItem
-                  user={user}
-                  key={user._id}
-                  handleFunction={() => addUserToGroup(user._id)}
-                  setSearch={setSearch}
-                />
-              );
-            })}
-          </Box>
-          <Flex marginY="1rem">
-            {selectedChat?.users
-              .filter((user) => user._id !== selectedChat.groupAdmin._id)
-              .map((user) => {
-                return (
-                  <UserTagItem
-                    key={user._id}
-                    user={user}
-                    handleFunction={() => removeUserFromGroup(user._id)}
-                  />
-                );
-              })}
-          </Flex>
-          <Box></Box>
-        </ModalBody>
-        <ModalFooter>
-          <Button colorScheme="gray" mr={3} onClick={onClose}>
-            Close
-          </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+    <>
+      {selectedChat && selectedChat.isGroupChat && (
+        <Modal
+          isOpen={isOpen}
+          onClose={() => {
+            onClose();
+            setSearch("");
+          }}
+          size="xl"
+        >
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Manage Users</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <Input
+                type="text"
+                name="search"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Add Users: John, Sara, Ben"
+                mb="1em"
+                fontSize="sm"
+              ></Input>
+              <Box>
+                {searchResults.map((user) => {
+                  return (
+                    <UserListItem
+                      user={user}
+                      key={user._id}
+                      handleFunction={() => addUserToGroup(user._id)}
+                      setSearch={setSearch}
+                    />
+                  );
+                })}
+              </Box>
+              <Flex marginY="1rem">
+                {selectedChat?.users
+                  .filter((user) => user._id !== selectedChat.groupAdmin._id)
+                  .map((user) => {
+                    return (
+                      <UserTagItem
+                        key={user._id}
+                        user={user}
+                        handleFunction={() => removeUserFromGroup(user._id)}
+                      />
+                    );
+                  })}
+              </Flex>
+              <Box></Box>
+            </ModalBody>
+            <ModalFooter>
+              <Button colorScheme="gray" mr={3} onClick={onClose}>
+                Close
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      )}
+    </>
   );
 };
 

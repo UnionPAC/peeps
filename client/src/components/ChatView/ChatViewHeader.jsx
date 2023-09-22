@@ -91,9 +91,9 @@ const ChatViewHeader = () => {
 
   return (
     <>
-      {selectedChat ? (
+      {selectedChat &&
         // GROUP CHAT
-        selectedChat?.isGroupChat ? (
+        (selectedChat?.isGroupChat ? (
           <>
             <Flex
               padding="1rem"
@@ -134,25 +134,6 @@ const ChatViewHeader = () => {
                 </MenuList>
               </Menu>
             </Flex>
-
-            <GroupInfo onClose={closeGroupInfo} isOpen={isGroupInfoOpen} />
-
-            <RenameGroup
-              onClose={closeRenameGroup}
-              isOpen={isRenameGroupOpen}
-            />
-
-            <ManageGroupUsers
-              onClose={closeManageUsers}
-              isOpen={isManageUsersOpen}
-            />
-
-            <LeaveChat onClose={closeLeaveChat} isOpen={isLeaveChatOpen} />
-
-            <DeleteGroup
-              onClose={closeDeleteGroup}
-              isOpen={isDeleteGroupOpen}
-            />
           </>
         ) : (
           // SINGLE CHAT
@@ -165,11 +146,7 @@ const ChatViewHeader = () => {
             >
               <Flex align="center">
                 <Avatar
-                  name={
-                    getFullSender(userInfo, selectedChat?.users).name ||
-                    getFullSender(userInfo, selectedChat?.users).username
-                  }
-                  src={getFullSender(userInfo, selectedChat?.users).profilePic}
+                  name={getFullSender(userInfo, selectedChat?.users).username}
                   cursor="pointer"
                   size="md"
                   onClick={openContactInfo}
@@ -192,17 +169,14 @@ const ChatViewHeader = () => {
                 </MenuList>
               </Menu>
             </Flex>
-            {isContactInfoOpen && (
-              <ContactInfo
-                onClose={closeContactInfo}
-                isOpen={isContactInfoOpen}
-              />
-            )}
           </>
-        )
-      ) : (
-        ""
-      )}
+        ))}
+      <ContactInfo onClose={closeContactInfo} isOpen={isContactInfoOpen} />
+      <GroupInfo onClose={closeGroupInfo} isOpen={isGroupInfoOpen} />
+      <RenameGroup onClose={closeRenameGroup} isOpen={isRenameGroupOpen} />
+      <ManageGroupUsers onClose={closeManageUsers} isOpen={isManageUsersOpen} />
+      <LeaveChat onClose={closeLeaveChat} isOpen={isLeaveChatOpen} />
+      <DeleteGroup onClose={closeDeleteGroup} isOpen={isDeleteGroupOpen} />
     </>
   );
 };

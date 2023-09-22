@@ -23,7 +23,7 @@ import { HiPencil, HiCheck } from "react-icons/hi";
 import AccountDeletionDialog from "./DeleteAccount";
 import { useUpdateUserProfileMutation } from "../../slices/userApiSlice";
 import * as Yup from "yup";
-import { setCredentials } from "../../slices/authSlice";
+import { setCredentials, setSelectedChat } from "../../slices/authSlice";
 
 const ProfileDrawer = ({ isOpen, onClose }) => {
   const [name, setName] = useState("");
@@ -31,7 +31,7 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
   const [isEdittingName, setIsEdittingName] = useState(false);
   const [isEdittingEmail, setIsEdittingEmail] = useState(false);
 
-  const { userInfo } = useSelector((state) => state.auth);
+  const { userInfo, selectedChat } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
   const toast = useToast();
@@ -101,9 +101,7 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
         const res = await updateUser({
           profilePic: selectedImage,
         }).unwrap();
-        // console.log(res);
         dispatch(setCredentials({ ...res, profilePic: res.profilePic }));
-        //
       } catch (error) {
         console.error(error);
       }
