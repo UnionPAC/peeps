@@ -56,7 +56,6 @@ const LeaveGroup = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     socket.on("left group", (chat) => {
-      console.log("yay");
       refetchChats();
       if (selectedChat?.id == chat._id) {
         dispatch(setSelectedChat(chat));

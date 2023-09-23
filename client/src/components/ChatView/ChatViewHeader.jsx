@@ -8,6 +8,7 @@ import {
   IconButton,
   useDisclosure,
   Text,
+  AvatarGroup,
 } from "@chakra-ui/react";
 import { HiDotsVertical } from "react-icons/hi";
 import { useSelector, useDispatch } from "react-redux";
@@ -103,13 +104,34 @@ const ChatViewHeader = () => {
               height="auto"
             >
               <Flex align="center">
-                <Avatar
-                  name={selectedChat.name}
-                  cursor="pointer"
+                <AvatarGroup
                   size="md"
+                  max={2}
+                  cursor="pointer"
                   onClick={openGroupInfo}
-                />
-                <Text marginLeft="10px">{selectedChat.name}</Text>
+                >
+                  {selectedChat.users.map((user) => {
+                    return (
+                      <Avatar
+                        key={user._id}
+                        name={user.username}
+                        src={user.profilePic}
+                      />
+                    );
+                  })}
+                </AvatarGroup>
+                <Text marginLeft="10px">
+                  {selectedChat.name}
+                </Text>
+                {/*
+                <AvatarGroup size='md' max={2}>
+                  <Avatar name='Ryan Florence' src='https://bit.ly/ryan-florence' />
+                  <Avatar name='Segun Adebayo' src='https://bit.ly/sage-adebayo' />
+                  <Avatar name='Kent Dodds' src='https://bit.ly/kent-c-dodds' />
+                  <Avatar name='Prosper Otemuyiwa' src='https://bit.ly/prosper-baba' />
+                  <Avatar name='Christian Nwamba' src='https://bit.ly/code-beast' />
+                </AvatarGroup>
+                 */}
               </Flex>
 
               <Menu>

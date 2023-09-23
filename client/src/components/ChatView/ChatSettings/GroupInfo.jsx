@@ -13,11 +13,29 @@ import {
   Flex,
   Badge,
 } from "@chakra-ui/react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
+import socket from "../../../socket";
+import { useFetchChatsQuery } from "../../../slices/chatApiSlice";
+import { setSelectedChat } from "../../../slices/authSlice";
 
 const GroupInfo = ({ isOpen, onClose }) => {
   /* REDUX STUFF */
   const { selectedChat } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  /* QUERIES */
+  const { refetch: refetchChats } = useFetchChatsQuery();
+
+  useEffect(() => {
+    socket.on("left group", (chat) => {
+      refetchChats();
+      if (selectedChat?.id == chat._id) {
+        dispatch(setSelectedChat(chat));
+      }
+    });
+  }, []);
+
   return (
     <>
       {selectedChat && selectedChat.isGroupChat && (

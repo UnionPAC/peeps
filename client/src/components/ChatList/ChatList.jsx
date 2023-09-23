@@ -38,7 +38,9 @@ const ChatList = () => {
                   <>
                     <Avatar name={chat.name} size="md" mr={3} />
                     <Box marginLeft="0.5rem">
-                      <Text fontSize="18px">{chat.name}</Text>
+                      <Text fontSize="16px" fontWeight="medium">
+                        {chat.name}
+                      </Text>
                       {chat.lastMessage ? (
                         <Text fontSize="small">
                           <span style={{ fontWeight: "500" }}>
@@ -71,7 +73,7 @@ const ChatList = () => {
                       )}
                     </Avatar>
                     <Box marginLeft=".5rem">
-                      <Text fontSize="18px">
+                      <Text fontSize="16px" fontWeight="medium">
                         {getSenderUsername(userInfo, chat.users)}
                       </Text>
 
