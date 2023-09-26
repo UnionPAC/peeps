@@ -1,9 +1,14 @@
-import { Box, Flex, Avatar, AvatarBadge, Text } from "@chakra-ui/react";
+import { Box, Flex, Avatar, AvatarBadge, Text, Badge } from "@chakra-ui/react";
 import ChatListHeader from "./ChatListHeader";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedChat } from "../../slices/authSlice";
 import { useFetchChatsQuery } from "../../slices/chatApiSlice";
 import { getSenderUsername, getFullSender } from "../../utils/ChatLogicHelpers";
+import {
+  useDeleteNotificationMutation,
+  useFetchNotificationsQuery,
+} from "../../slices/notificationApiSlice";
+import { useFetchMessagesQuery } from "../../slices/messageApiSlice";
 
 const ChatList = () => {
   /* REDUX STUFF */
@@ -11,7 +16,33 @@ const ChatList = () => {
   const dispatch = useDispatch();
 
   /* QUERIES */
-  const { data: chats } = useFetchChatsQuery();
+  const { data: chats, refetch: refetchChats } = useFetchChatsQuery();
+  const { refetch: refetchMessages } = useFetchMessagesQuery();
+  const { data: notifications, refetch: refetchNotifications } =
+    useFetchNotificationsQuery();
+
+  /* MUTATIONS */
+  const [deleteNotification] = useDeleteNotificationMutation();
+
+  const handleChatClick = async (chat) => {
+    try {
+      dispatch(setSelectedChat(chat));
+      // delete all notifications that were from this chat
+      const notificationsToDelete = notifications.filter(
+        (notif) => notif.chat._id === chat._id
+      );
+      // Use Promise.all to await all delete operations
+      await Promise.all(
+        notificationsToDelete.map(async (n) => {
+          await deleteNotification(n._id).unwrap();
+        })
+      );
+      // After deleting notifications, refetch them
+      await refetchNotifications();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <Box width="25%" borderRight="1px solid lightgrey">
@@ -31,7 +62,7 @@ const ChatList = () => {
                     ? { bg: "blue.100" }
                     : { bg: "gray.200" }
                 }
-                onClick={() => dispatch(setSelectedChat(chat))}
+                onClick={() => handleChatClick(chat)}
                 key={chat._id}
               >
                 {chat.isGroupChat ? (
@@ -65,28 +96,39 @@ const ChatList = () => {
                         getFullSender(userInfo, chat.users).username
                       }
                       src={getFullSender(userInfo, chat.users).profilePic}
+                    ></Avatar>
+                    <Flex
+                      width="100%"
+                      marginLeft=".5rem"
+                      align="center"
+                      justify="space-between"
                     >
-                      {getFullSender(userInfo, chat.users).isOnline ? (
-                        <AvatarBadge boxSize="1.25em" bg="green.500" />
-                      ) : (
-                        ""
-                      )}
-                    </Avatar>
-                    <Box marginLeft=".5rem">
-                      <Text fontSize="16px" fontWeight="medium">
-                        {getSenderUsername(userInfo, chat.users)}
-                      </Text>
-
-                      {chat.lastMessage ? (
-                        <Text fontSize="small">
-                          {chat.lastMessage.content.length > 40
-                            ? chat.lastMessage.content.substring(0, 41) + "..."
-                            : chat.lastMessage.content}
+                      <Box>
+                        <Text fontSize="16px" fontWeight="medium">
+                          {getSenderUsername(userInfo, chat.users)}
                         </Text>
-                      ) : (
-                        <Text fontSize="small">Send first message 👋</Text>
-                      )}
-                    </Box>
+
+                        {chat.lastMessage ? (
+                          <Text fontSize="small">
+                            {chat.lastMessage.content.length > 40
+                              ? chat.lastMessage.content.substring(0, 41) +
+                                "..."
+                              : chat.lastMessage.content}
+                          </Text>
+                        ) : (
+                          <Text fontSize="small">Send first message 👋</Text>
+                        )}
+                      </Box>
+                      <Box>
+                        {/* Display notification count (from this specific user) here */}
+                        {notifications?.filter(
+                          (notif) => notif.chat._id == chat._id
+                        ).length > 0 &&
+                          notifications?.filter(
+                            (notif) => notif.chat._id == chat._id
+                          ).length}
+                      </Box>
+                    </Flex>
                   </>
                 )}
               </Flex>

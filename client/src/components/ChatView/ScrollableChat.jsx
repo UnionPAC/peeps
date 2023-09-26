@@ -6,10 +6,19 @@ import {
   isSameUser,
 } from "../../utils/ChatLogicHelpers";
 import { useSelector } from "react-redux";
-
+import { useRef, useEffect } from "react";
 
 const ScrollableChat = ({ messages }) => {
   const { userInfo } = useSelector((state) => state.auth);
+
+  const lastMessageRef = useRef();
+
+  // Scroll to the bottom when messages change
+  useEffect(() => {
+    if (lastMessageRef.current) {
+      lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   return (
     <Box>
@@ -57,6 +66,7 @@ const ScrollableChat = ({ messages }) => {
           </Flex>
         );
       })}
+      <Box ref={lastMessageRef}></Box>
     </Box>
   );
 };

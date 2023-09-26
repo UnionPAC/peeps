@@ -10,6 +10,10 @@ import ScrollableChat from "./ScrollableChat";
 import Lottie from "lottie-react";
 import typingIndicator from "../../assets/typing-indicator.json";
 import socket from "../../socket";
+import {
+  useCreateNotificationMutation,
+  useFetchNotificationsQuery,
+} from "../../slices/notificationApiSlice";
 
 let selectedChatCompare;
 
@@ -25,12 +29,14 @@ const SingleChat = () => {
 
   /* MUTATIONS */
   const [sendMessageMutation] = useSendMessageMutation();
+  const [createNotification] = useCreateNotificationMutation();
 
   /* QUERIES */
   const { refetch: refetchChats } = useFetchChatsQuery();
   const { data: messages, refetch: refetchMessages } = useFetchMessagesQuery(
     selectedChat?._id
   );
+  const { refetch: refetchNotifications } = useFetchNotificationsQuery();
 
   const sendMessage = async (e) => {
     if (e.key === "Enter" && newMessage) {
@@ -68,6 +74,14 @@ const SingleChat = () => {
     }, timerLength);
   };
 
+  const createNewNotification = async (message, recipient, chat) => {
+    const res = await createNotification({
+      message,
+      recipient,
+      chat,
+    }).unwrap();
+  };
+
   useEffect(() => {
     socket.on("connected", () => setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
@@ -77,9 +91,16 @@ const SingleChat = () => {
         !selectedChatCompare || // if chat is not selected or doesn't match current chat
         selectedChatCompare._id !== newMessageReceived.chat._id
       ) {
-        // @TODO -if the new message received is NOT already in notifications, then add to notifications
+        if (!newMessageReceived.chat.isGroupChat) {
+          createNewNotification(
+            newMessageReceived.content,
+            userInfo._id,
+            newMessageReceived.chat
+          );
+        }
         refetchChats();
         refetchMessages();
+        refetchNotifications();
       } else {
         refetchChats();
         refetchMessages();

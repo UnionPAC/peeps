@@ -6,11 +6,9 @@ import User from "../models/userModel.js";
 //@route     POST /api/notifications
 //@access    Private
 const createNotification = asyncHandler(async (req, res) => {
-  const { message, recipients, chat } = req.body;
+  const { message, recipient, chat } = req.body;
 
-  console.log({message, recipients, chat})
-
-  if (!message || !recipients || !chat) {
+  if (!message || !recipient || !chat) {
     res.status(400);
     throw new Error("Invalid data for create notification request");
   }
@@ -22,8 +20,7 @@ const createNotification = asyncHandler(async (req, res) => {
 
   const newNotification = {
     message,
-    sender: req.user._id,
-    recipients,
+    recipient,
     chat,
   };
 
@@ -49,7 +46,9 @@ const fetchNotifications = asyncHandler(async (req, res) => {
   }
 
   try {
-    let notifications = await Notification.find({ recipients: userId }).populate('sender').populate('chat');
+    let notifications = await Notification.find({ recipient: userId })
+      .populate("sender")
+      .populate("chat");
     notifications = await User.populate(notifications, {
       path: "chat.users",
       select: "username profilePic email",
@@ -60,7 +59,6 @@ const fetchNotifications = asyncHandler(async (req, res) => {
     throw new Error("Unable to fetch notifications");
   }
 });
-
 
 //@desc      Delete a notification
 //@route     DELETE /api/notifications/:id
@@ -91,8 +89,4 @@ const deleteNotification = asyncHandler(async (req, res) => {
   }
 });
 
-export {
-  createNotification,
-  fetchNotifications,
-  deleteNotification,
-};
+export { createNotification, fetchNotifications, deleteNotification };

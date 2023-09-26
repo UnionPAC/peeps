@@ -8,19 +8,26 @@ import {
   MenuItem,
   useDisclosure,
   Tooltip,
+  Box,
   Text,
 } from "@chakra-ui/react";
 import { HiUserGroup, HiDotsVertical, HiBell } from "react-icons/hi";
 import { HiChatBubbleLeftEllipsis } from "react-icons/hi2";
 import { useDispatch, useSelector } from "react-redux";
-import { clearCredentials, clearSelectedChat } from "../../slices/authSlice";
+import {
+  clearCredentials,
+  clearSelectedChat,
+  setSelectedChat,
+} from "../../slices/authSlice";
 import { useLogoutMutation } from "../../slices/userApiSlice";
 import { useFetchChatsQuery } from "../../slices/chatApiSlice";
 import { useFetchMessagesQuery } from "../../slices/messageApiSlice";
+import { useDeleteNotificationMutation } from "../../slices/notificationApiSlice";
 import ProfileDrawer from "../ProfileDrawer/ProfileDrawer";
 import CreateGroup from "./CreateGroup";
 import CreateChat from "./CreateChat";
-
+import { useFetchNotificationsQuery } from "../../slices/notificationApiSlice";
+import { getFullSender } from "../../utils/ChatLogicHelpers";
 
 const ChatListHeader = () => {
   /* REDUX STUFF */
@@ -33,6 +40,11 @@ const ChatListHeader = () => {
   /* QUERIES */
   const { refetch: refetchChats } = useFetchChatsQuery();
   const { refetch: refetchMessages } = useFetchMessagesQuery(selectedChat?._id);
+  const { data: notifications, refetch: refetchNotifications } =
+    useFetchNotificationsQuery();
+
+  /* MUTATIONS */
+  const [deleteNotification] = useDeleteNotificationMutation();
 
   /* DISCLOSURE TOGGLES */
   {
@@ -76,6 +88,28 @@ const ChatListHeader = () => {
     }
   };
 
+  const handleClickNotification = async (notification) => {
+    const chat = notification.chat;
+    try {
+      dispatch(setSelectedChat(chat));
+      // delete all notifications that were from this chat
+      const notificationsToDelete = notifications.filter(
+        (notif) => notif.chat._id === chat._id
+      );
+      // Use Promise.all to await all delete operations
+      await Promise.all(
+        notificationsToDelete.map(async (n) => {
+          await deleteNotification(n._id).unwrap();
+        })
+      );
+      // After deleting notifications, refetch them
+      await refetchNotifications();
+      await refetchMessages();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <Flex
@@ -114,13 +148,63 @@ const ChatListHeader = () => {
             <Tooltip label="notifications" fontSize="small">
               <MenuButton
                 as={IconButton}
-                icon={<HiBell />}
+                icon={
+                  notifications?.length > 0 ? (
+                    <>
+                      <HiBell />
+                      <Box
+                        as="span"
+                        color="white"
+                        position="absolute"
+                        top="-2px"
+                        right={notifications?.length > 9 ? "-3px" : "0px"}
+                        fontSize="0.8rem"
+                        fontWeight="normal"
+                        bgColor="red.500"
+                        borderRadius="100px"
+                        px="6px"
+                        py="2px"
+                      >
+                        {notifications?.length}
+                      </Box>
+                    </>
+                  ) : (
+                    <HiBell />
+                  )
+                }
                 bg="transparent"
                 fontSize="1.4rem"
               ></MenuButton>
             </Tooltip>
-
-            <MenuList padding=".5em">{"no new notifications"}</MenuList>
+            <MenuList padding=".4em">
+              {notifications?.length > 0
+                ? notifications.map((notif) => {
+                    return (
+                      <MenuItem
+                        onClick={() => handleClickNotification(notif)}
+                        key={notif._id}
+                        paddingY=".7em"
+                        gap=".6em"
+                      >
+                        <Avatar
+                          name={
+                            getFullSender(userInfo, notif.chat.users).username
+                          }
+                          src={
+                            getFullSender(userInfo, notif.chat.users).profilePic
+                          }
+                        />
+                        <Box>
+                          <Text fontWeight="medium">{`@${
+                            getFullSender(userInfo, notif.chat.users).username
+                          }`}</Text>
+                          <Text fontSize="sm">{notif.message}</Text>
+                        </Box>
+                      </MenuItem>
+                    );
+                  })
+                : "no new messages"}
+            </MenuList>
           </Menu>
 
           <Menu>
