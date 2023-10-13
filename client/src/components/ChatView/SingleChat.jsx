@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, FormControl, Input } from "@chakra-ui/react";
+import { Box, FormControl, Input, Flex, Text } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import {
   useFetchMessagesQuery,
@@ -136,7 +136,7 @@ const SingleChat = () => {
               <></>
             )}
             <Input
-              bg="gray.100"
+              bg="rgba(255, 255, 255, 0.65)"
               border="none"
               padding="1em"
               _focusVisible={false}
@@ -150,7 +150,11 @@ const SingleChat = () => {
           </FormControl>
         </>
       ) : (
-        "Click on a user to start chatting"
+        <Flex h="full" justify="center" align="center">
+          <Text color="gray.600" fontStyle="italic">
+            Click on a user to start chatting
+          </Text>
+        </Flex>
       )}
     </>
   );

@@ -115,7 +115,7 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
         <DrawerContent>
           <DrawerCloseButton _focusVisible={false} />
           <DrawerHeader>
-            <Text fontSize="1.4rem" fontWeight="semibold">
+            <Text fontSize="1.3rem" fontWeight="700">
               Profile
             </Text>
           </DrawerHeader>
@@ -128,7 +128,7 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
                 margin="2em"
                 width="180px"
                 height="180px"
-                loading=""
+                loading="lazy"
               />
               <Input
                 type="file"
@@ -144,7 +144,7 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
             </Flex>
 
             <Box width="90%" mx="auto">
-              <Heading size="sm" fontWeight="semibold" mb=".5em">
+              <Heading size="sm" fontWeight="500" mb=".5em">
                 Name
               </Heading>
               <Flex
@@ -197,6 +197,12 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
                     <Input
                       _focusVisible={false}
                       placeholder="Please add your name"
+                      border="none"
+                      bg="rgba(0, 0, 0, 0.05)"
+                      textColor="blackAlpha.800"
+                      fontSize="small"
+                      fontWeight="300"
+                      rounded="none"
                       onChange={(e) => setName(e.target.value)}
                       value={name}
                     />
@@ -207,13 +213,17 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
                           setIsEdittingName(false);
                         }, 400);
                       }}
+                      bg="rgba(0, 0, 0, 0.05)"
+                      rounded="none"
+                      borderTopRightRadius="3px"
+                      borderBottomRightRadius="3px"
                       icon={<HiCheck />}
                     />
                   </Flex>
                 )}
               </Flex>
 
-              <Heading size="sm" fontWeight="semibold" mb=".5em">
+              <Heading size="sm" fontWeight="500" mb=".5em">
                 Username
               </Heading>
               <Flex
@@ -225,7 +235,7 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
                 <Text>{userInfo.username}</Text>
               </Flex>
 
-              <Heading size="sm" fontWeight="semibold" mb=".5em">
+              <Heading size="sm" fontWeight="500" mb=".5em">
                 Email
               </Heading>
               <Flex
@@ -268,7 +278,15 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
                 justifyContent="flex-start"
                 padding="0"
               >
-                <Button onClick={openDeleteDialog}>Delete Account</Button>
+                <Button
+                  onClick={openDeleteDialog}
+                  fontFamily="body"
+                  fontWeight="400"
+                  color="white"
+                  bg="red.400"
+                >
+                  Delete Account
+                </Button>
               </DrawerFooter>
             </Box>
           </DrawerBody>

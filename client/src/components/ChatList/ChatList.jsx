@@ -45,7 +45,10 @@ const ChatList = () => {
   };
 
   return (
-    <Box width="25%" borderRight="1px solid lightgrey">
+    <Box
+      borderRight="1px solid lightgrey"
+      minW="25%"
+    >
       <ChatListHeader />
 
       {/* List of Chats */}
@@ -95,7 +98,7 @@ const ChatList = () => {
                         getFullSender(userInfo, chat.users).username ||
                         getFullSender(userInfo, chat.users).username
                       }
-                      src={getFullSender(userInfo, chat.users).profilePic}
+                      src={getFullSender(userInfo, chat.users).profilePic || `chick.svg`}
                     ></Avatar>
                     <Flex
                       width="100%"
@@ -137,8 +140,9 @@ const ChatList = () => {
         </Box>
       ) : (
         <Flex justify="center" mt="4rem">
-          <Text color="gray.600" fontStyle="italic">
-            You don't have any chats yet
+          <Text color="gray.600">
+            You don't have any chats yet{" "}
+            <span style={{ marginLeft: "3px" }}>😔</span>
           </Text>
         </Flex>
       )}

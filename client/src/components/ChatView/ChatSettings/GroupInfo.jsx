@@ -54,11 +54,11 @@ const GroupInfo = ({ isOpen, onClose }) => {
                       <Avatar
                         size="md"
                         name={user.username}
-                        src={user.profilePic}
+                        src={user.profilePic || `chick.svg`}
                       />
                       <Box ml={3}>
                         <Flex align="center">
-                          <Text fontWeight="medium">{user.username}</Text>
+                          <Text fontWeight="700">{user.username}</Text>
                           {user._id == selectedChat.groupAdmin._id ? (
                             <Badge ml={2} colorScheme="green">
                               Admin

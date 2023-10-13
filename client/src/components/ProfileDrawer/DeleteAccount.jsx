@@ -6,6 +6,7 @@ import {
   AlertDialogContent,
   AlertDialogOverlay,
   Button,
+  Text,
   useToast,
 } from "@chakra-ui/react";
 import { useDeleteUserProfileMutation } from "../../slices/userApiSlice";
@@ -35,18 +36,37 @@ const AccountDeletionDialog = ({ closeDeleteDialog, isDeleteDialogOpen }) => {
     <AlertDialog isOpen={isDeleteDialogOpen} onClose={closeDeleteDialog}>
       <AlertDialogOverlay>
         <AlertDialogContent>
-          <AlertDialogHeader fontSize="lg" fontWeight="bold">
-            Delete Account
+          <AlertDialogHeader>
+            <Text fontSize="md" fontFamily="body" fontWeight="700">
+              Delete Account
+            </Text>
           </AlertDialogHeader>
 
           <AlertDialogBody>
-            Are you sure you want to delete your account? This action cannot be
-            undone.
+            <Text fontSize="md" fontFamily="body" fontWeight="400">
+              Are you sure you want to delete your account? This action cannot
+              be undone.
+            </Text>
           </AlertDialogBody>
 
           <AlertDialogFooter>
-            <Button onClick={closeDeleteDialog}>Cancel</Button>
-            <Button colorScheme="red" ml={3} onClick={handleDeleteAccount}>
+            <Button
+              onClick={closeDeleteDialog}
+              fontSize="md"
+              fontFamily="body"
+              fontWeight="400"
+            >
+              Cancel
+            </Button>
+            <Button
+              fontSize="md"
+              fontFamily="body"
+              fontWeight="400"
+              ml={3}
+              color="white"
+              bg="red.400"
+              onClick={handleDeleteAccount}
+            >
               Delete
             </Button>
           </AlertDialogFooter>

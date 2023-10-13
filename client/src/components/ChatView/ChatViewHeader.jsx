@@ -100,8 +100,8 @@ const ChatViewHeader = () => {
               padding="1rem"
               justify="space-between"
               align="center"
-              bg="gray.100"
               height="auto"
+              bg="rgba(255, 255, 255, 0.15)"
             >
               <Flex align="center">
                 <AvatarGroup
@@ -120,9 +120,7 @@ const ChatViewHeader = () => {
                     );
                   })}
                 </AvatarGroup>
-                <Text marginLeft="10px">
-                  {selectedChat?.name}
-                </Text>
+                <Text marginLeft="10px">{selectedChat?.name}</Text>
               </Flex>
 
               <Menu>
@@ -131,6 +129,7 @@ const ChatViewHeader = () => {
                   icon={<HiDotsVertical />}
                   bg="transparent"
                   fontSize="1.4rem"
+                  _hover={{ bg: "rgba(0, 0, 0, 0.05)" }}
                 />
                 <MenuList>
                   <MenuItem onClick={openGroupInfo}>Group info</MenuItem>
@@ -155,11 +154,15 @@ const ChatViewHeader = () => {
               padding="1rem"
               justify="space-between"
               align="center"
-              bg="gray.100"
+              bg="rgba(255, 255, 255, 0.15)"
             >
               <Flex align="center">
                 <Avatar
                   name={getFullSender(userInfo, selectedChat?.users).username}
+                  src={
+                    getFullSender(userInfo, selectedChat?.users).profilePic ||
+                    `chick.svg`
+                  }
                   cursor="pointer"
                   size="md"
                   onClick={openContactInfo}
@@ -175,6 +178,7 @@ const ChatViewHeader = () => {
                   icon={<HiDotsVertical />}
                   bg="transparent"
                   fontSize="1.4rem"
+                  _hover={{ bg: "rgba(0, 0, 0, 0.05)" }}
                 />
                 <MenuList>
                   <MenuItem onClick={openContactInfo}>Contact info</MenuItem>

@@ -13,7 +13,7 @@ const Home = () => {
   });
 
   return (
-    <Flex height="100dvh">
+    <Flex height="100%">
       <ChatList />
       <ChatView />
     </Flex>

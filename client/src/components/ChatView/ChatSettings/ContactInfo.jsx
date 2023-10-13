@@ -8,6 +8,9 @@ import {
   ModalFooter,
   Text,
   Image,
+  Flex,
+  Box,
+  Heading,
 } from "@chakra-ui/react";
 import { getFullSender } from "../../../utils/ChatLogicHelpers";
 import { useSelector } from "react-redux";
@@ -24,23 +27,38 @@ const ContactInfo = ({ isOpen, onClose }) => {
           <ModalContent>
             <ModalCloseButton />
             <ModalBody>
-              <Image
-                src={
-                  getFullSender(userInfo, selectedChat.users).profilePic ||
-                  null
-                }
-                padding="1em"
-              />
-              <Text my=".8em">
-                Username:{" "}
-                {getFullSender(userInfo, selectedChat.users).username}
-              </Text>
-              <Text my=".8em">
-                Name: {getFullSender(userInfo, selectedChat.users).name}
-              </Text>
-              <Text my=".8em">
-                Email: {getFullSender(userInfo, selectedChat.users).email}
-              </Text>
+              <Flex gap={10}>
+                <Image
+                  src={
+                    getFullSender(userInfo, selectedChat.users).profilePic ||
+                    `chick.svg`
+                  }
+                  paddingY="1em"
+                  w={200}
+                />
+                <Box mt={8}>
+                  <Heading my=".1em" fontSize="medium">
+                    Username
+                  </Heading>
+                  <Text mb={4}>
+                    {getFullSender(userInfo, selectedChat.users).username}
+                  </Text>
+
+                  <Heading my=".1em" fontSize="medium">
+                    Name
+                  </Heading>
+                  <Text mb={4}>
+                    {getFullSender(userInfo, selectedChat.users).name || "n/a"}
+                  </Text>
+
+                  <Heading my=".1em" fontSize="medium">
+                    Email
+                  </Heading>
+                  <Text>
+                    {getFullSender(userInfo, selectedChat.users).email}
+                  </Text>
+                </Box>
+              </Flex>
             </ModalBody>
             <ModalFooter>
               <Button colorScheme="gray" mr={3} onClick={onClose}>
