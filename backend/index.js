@@ -13,9 +13,6 @@ import notificationRoutes from "./routes/notificationRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 import chalk from "chalk";
 
-/* CONSTANTS */
-const PORT = process.env.PORT;
-
 const app = express();
 const server = createServer(app);
 
@@ -32,26 +29,27 @@ app.use("/api/messages", messageRoutes);
 app.use("/api/chats", chatRoutes);
 app.use("/api/notifications", notificationRoutes);
 
-app.use(notFound);
-app.use(errorHandler);
-
 // --------------------------deployment------------------------------
-
 const __dirname1 = path.resolve();
 
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname1, "/frontend/dist")));
+  app.use(express.static(path.join(__dirname1, "/client/dist")));
 
   app.get("*", (req, res) =>
-    res.sendFile(path.resolve(__dirname1, "frontend", "dist", "index.html"))
+    res.sendFile(path.resolve(__dirname1, "client", "dist", "index.html"))
   );
 } else {
   app.get("/", (req, res) => {
     res.send("API is running..");
   });
 }
-
 // --------------------------deployment------------------------------
+
+// Error Handling middlewares
+app.use(notFound);
+app.use(errorHandler);
+
+const PORT = process.env.PORT;
 
 /* Socket.io */
 
